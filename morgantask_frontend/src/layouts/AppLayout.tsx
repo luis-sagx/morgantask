@@ -19,7 +19,7 @@ export default function AppLayout() {
                 <div className='flex flex-col items-center justify-between mx-auto max-w-screen-2xl lg:flex-row'>
                     <div className='w-64'>
                         <Link to={'/'}>
-                            <div className='w-40'>
+                            <div className='w-32'>
                                 <Logo />
                             </div>
                         </Link>

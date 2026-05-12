@@ -1,9 +1,9 @@
-import { FingerPrintIcon, UserIcon } from '@heroicons/react/20/solid'
+import { UserCircleIcon, LockClosedIcon } from '@heroicons/react/20/solid'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const tabs = [
-    { name: 'Mi Cuenta', href: '/profile', icon: UserIcon },
-    { name: 'Cambiar Contraseña', href: '/profile/password', icon: FingerPrintIcon },
+    { name: 'Mi Cuenta', href: '/profile', icon: UserCircleIcon },
+    { name: 'Cambiar Contraseña', href: '/profile/password', icon: LockClosedIcon },
 ]
 
 function classNames(...classes: string[]) {
