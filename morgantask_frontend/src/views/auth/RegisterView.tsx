@@ -17,7 +17,7 @@ export default function RegisterView() {
 
   const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<UserRegistrationForm>({ defaultValues: initialValues });
 
-  const { mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: createAccount,
     onError: (error) => {
         toast.error(error.message)
@@ -35,26 +35,22 @@ export default function RegisterView() {
   return (
     <>
       <h1 className="text-5xl font-black text-white">Crear Cuenta</h1>
-      <p className="text-2xl font-light text-white mt-5">
-        Llena el formulario para {''}
-        <span className=" text-cyan-400 font-bold"> crear tu cuenta</span>
-      </p>
 
       <form
         onSubmit={handleSubmit(handleRegister)}
-        className="space-y-8 p-10  bg-white mt-10"
+        className="p-10 mt-10 space-y-8 bg-white"
         noValidate
       >
         <div className="flex flex-col gap-5">
           <label
-            className="font-normal text-2xl"
+            className="text-2xl font-normal"
             htmlFor="email"
           >Email</label>
           <input
             id="email"
             type="email"
             placeholder="Email de Registro"
-            className="w-full p-3  border-gray-300 border rounded-md"
+            className="w-full p-3 border border-gray-300 rounded-md"
             {...register("email", {
               required: "El Email de registro es obligatorio",
               pattern: {
@@ -70,12 +66,12 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="font-normal text-2xl"
+            className="text-2xl font-normal"
           >Nombre</label>
           <input
             type="name"
             placeholder="Nombre de Registro"
-            className="w-full p-3  border-gray-300 border rounded-md"
+            className="w-full p-3 border border-gray-300 rounded-md"
             {...register("name", {
               required: "El Nombre de usuario es obligatorio",
             })}
@@ -87,18 +83,18 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="font-normal text-2xl"
-          >Password</label>
+            className="text-2xl font-normal"
+          >Contraseña</label>
 
           <input
             type="password"
-            placeholder="Password de Registro"
-            className="w-full p-3  border-gray-300 border rounded-md"
+            placeholder="Contraseña de Registro"
+            className="w-full p-3 border border-gray-300 rounded-md"
             {...register("password", {
-              required: "El Password es obligatorio",
+              required: "La Contraseña es obligatoria",
               minLength: {
                 value: 8,
-                message: 'El Password debe ser mínimo de 8 caracteres'
+                message: 'La Contraseña debe ser mínimo de 8 caracteres'
               }
             })}
           />
@@ -109,17 +105,17 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="font-normal text-2xl"
-          >Repetir Password</label>
+            className="text-2xl font-normal"
+          >Repetir Contraseña</label>
 
           <input
             id="password_confirmation"
             type="password"
-            placeholder="Repite Password de Registro"
-            className="w-full p-3  border-gray-300 border rounded-md"
+            placeholder="Repite Contraseña de Registro"
+            className="w-full p-3 border border-gray-300 rounded-md"
             {...register("password_confirmation", {
-              required: "Repetir Password es obligatorio",
-              validate: value => value === password || 'Los Passwords no son iguales'
+              required: "Repetir Contraseña es obligatorio",
+              validate: value => value === password || 'Las Contraseñas no son iguales'
             })}
           />
 
@@ -131,14 +127,14 @@ export default function RegisterView() {
         <input
           type="submit"
           value='Registrarme'
-          className="bg-indigo-600 hover:bg-cyan-500 w-full p-3 rounded-md text-white font-black  text-xl cursor-pointer transition-colors duration-200"
+          className="w-full p-3 text-xl font-black text-white transition-colors duration-200 bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
         />
       </form>
 
-      <nav className="mt-10 flex flex-col space-y-4">
+      <nav className="flex flex-col mt-10 space-y-4">
             <Link
                 to={'/auth/login'}
-                className="text-center text-gray-300 font-normal"
+                className="font-normal text-center text-sky-500"
             >¿Ya tienes cuenta? Iniciar Sesión</Link>
       </nav>
     </>

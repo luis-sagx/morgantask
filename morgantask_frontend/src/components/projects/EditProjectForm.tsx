@@ -1,10 +1,10 @@
-import ProjectForm from './ProjectForm'
-import { Link, useNavigate } from 'react-router-dom'
-import { Project, ProjectFormData } from '@/types/index'
-import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProject } from '@/api/ProjectAPI'
+import { Project, ProjectFormData } from '@/types/index'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import ProjectForm from './ProjectForm'
 
 type EditProjectFormProps = {
     data: ProjectFormData
@@ -50,7 +50,7 @@ export default function EditProjectForm({data, projectId} : EditProjectFormProps
 
                 <nav className="my-5 ">
                     <Link
-                        className=" bg-purple-400 hover:bg-purple-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
+                        className=" bg-sky-400 hover:bg-sky-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
                         to='/'
                     >Volver a Proyectos</Link>
                 </nav>

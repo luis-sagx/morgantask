@@ -1,9 +1,9 @@
-import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { Bars3Icon } from '@heroicons/react/20/solid'
+import { useQueryClient } from '@tanstack/react-query'
+import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { User } from '../types'
-import { useQueryClient } from '@tanstack/react-query'
 
 type NavMenuProps = {
   name: User['name']
@@ -19,7 +19,7 @@ export default function NavMenu({name} : NavMenuProps) {
 
   return (
     <Popover className="relative">
-      <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 p-1 rounded-lg bg-purple-400">
+      <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 p-1 rounded-lg bg-sky-400">
         <Bars3Icon className='w-8 h-8 text-white ' />
       </Popover.Button>
 
@@ -37,14 +37,14 @@ export default function NavMenu({name} : NavMenuProps) {
             <p className='text-center'>Hola: {name}</p>
             <Link
               to='/profile'
-              className='block p-2 hover:text-purple-950'
+              className='block p-2 hover:text-sky-950'
             >Mi Perfil</Link>
             <Link
               to='/'
-              className='block p-2 hover:text-purple-950'
+              className='block p-2 hover:text-sky-950'
             >Mis Proyectos</Link>
             <button
-              className='block p-2 hover:text-purple-950'
+              className='block p-2 hover:text-sky-950'
               type='button'
               onClick={logout}
             >

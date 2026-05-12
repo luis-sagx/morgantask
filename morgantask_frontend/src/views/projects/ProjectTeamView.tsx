@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import AddMemberModal from "@/components/team/AddMemberModal"
 import { getProjectTeam, removeUserFromProject } from "@/api/TeamAPI"
+import AddMemberModal from "@/components/team/AddMemberModal"
+import { Menu, Transition } from '@headlessui/react'
+import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Fragment } from 'react'
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
 import { toast } from 'react-toastify'
 
 
@@ -42,7 +42,7 @@ export default function ProjectTeamView() {
             <nav className="my-5 flex gap-3">
                 <button
                     type="button"
-                    className="bg-purple-400 hover:bg-purple-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
+                    className="bg-sky-400 hover:bg-sky-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
                     onClick={() => navigate(location.pathname + '?addMember=true')}
                 >Agregar Colaborador</button>
 

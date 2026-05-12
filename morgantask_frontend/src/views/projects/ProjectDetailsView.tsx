@@ -1,13 +1,13 @@
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
-import { useQuery } from '@tanstack/react-query'
 import { getFullProject } from "@/api/ProjectAPI"
 import AddTaskModal from "@/components/tasks/AddTaskModal"
-import TaskList from "@/components/tasks/TaskList"
 import EditTaskData from "@/components/tasks/EditTaskData"
+import TaskList from "@/components/tasks/TaskList"
 import TaskModalDetails from "@/components/tasks/TaskModalDetails"
 import { useAuth } from "@/hooks/useAuth"
 import { isManager } from "@/utils/policies"
+import { useQuery } from '@tanstack/react-query'
 import { useMemo } from "react"
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
 
 export default function ProjectDetailsView() {
 
@@ -33,7 +33,7 @@ export default function ProjectDetailsView() {
                 <nav className="my-5 flex gap-3">
                     <button
                         type="button"
-                        className="bg-purple-400 hover:bg-purple-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
+                        className="bg-sky-400 hover:bg-sky-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
                         onClick={() => navigate(location.pathname + '?newTask=true')}
                     >Agregar Tarea</button>
 
