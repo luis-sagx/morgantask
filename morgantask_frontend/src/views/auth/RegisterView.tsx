@@ -34,7 +34,7 @@ export default function RegisterView() {
 
   return (
     <>
-      <h1 className="text-5xl font-black text-white">Crear Cuenta</h1>
+      <h1 className="text-3xl font-bold text-white">Crear Cuenta</h1>
 
       <form
         onSubmit={handleSubmit(handleRegister)}
@@ -43,7 +43,7 @@ export default function RegisterView() {
       >
         <div className="flex flex-col gap-5">
           <label
-            className="text-2xl font-normal"
+            className="text-base font-normal"
             htmlFor="email"
           >Email</label>
           <input
@@ -66,7 +66,7 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="text-2xl font-normal"
+            className="text-base font-normal"
           >Nombre</label>
           <input
             type="name"
@@ -83,7 +83,7 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="text-2xl font-normal"
+            className="text-base font-normal"
           >Contraseña</label>
 
           <input
@@ -105,7 +105,7 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="text-2xl font-normal"
+            className="text-base font-normal"
           >Repetir Contraseña</label>
 
           <input
@@ -127,7 +127,7 @@ export default function RegisterView() {
         <input
           type="submit"
           value='Registrarme'
-          className="w-full p-3 text-xl font-black text-white transition-colors duration-200 bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
+          className="w-full p-3 text-base font-medium text-white transition-colors duration-200 bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
         />
       </form>
 

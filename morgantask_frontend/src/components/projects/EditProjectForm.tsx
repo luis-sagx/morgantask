@@ -21,7 +21,7 @@ export default function EditProjectForm({data, projectId} : EditProjectFormProps
     }})
     
     const queryClient = useQueryClient()
-    const { mutate } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: updateProject,
         onError: (error) => {
            toast.error(error.message)
@@ -45,18 +45,18 @@ export default function EditProjectForm({data, projectId} : EditProjectFormProps
     return (
         <>
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-5xl font-black">Editar Proyecto</h1>
-                <p className="text-2xl font-light text-gray-500 mt-5">Llena el siguiente formulario para editar el proyecto</p>
+                <h1 className="text-3xl font-bold">Editar Proyecto</h1>
+                <p className="mt-2 text-base font-light text-gray-500">Llena el siguiente formulario para editar el proyecto</p>
 
                 <nav className="my-5 ">
                     <Link
-                        className=" bg-sky-400 hover:bg-sky-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
+                        className="px-4 py-2 font-medium text-white transition-colors rounded-md cursor-pointer bg-sky-400 hover:bg-sky-500"
                         to='/'
                     >Volver a Proyectos</Link>
                 </nav>
 
                 <form
-                    className="mt-10 bg-white shadow-lg p-10 rounded-lg"
+                    className="p-10 mt-10 bg-white rounded-lg shadow-lg"
                     onSubmit={handleSubmit(handleForm)}
                     noValidate
                 >
@@ -69,7 +69,7 @@ export default function EditProjectForm({data, projectId} : EditProjectFormProps
                     <input
                         type="submit"
                         value='Guardar Cambios'
-                        className=" bg-indigo-600 hover:bg-cyan-500 w-full p-3 text-white uppercase font-bold cursor-pointer transition-colors rounded-md"
+                        className="w-full p-3 text-sm font-medium text-white uppercase transition-colors bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
                     />  
                 </form>
             </div>

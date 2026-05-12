@@ -29,7 +29,7 @@ export default function LoginView() {
 
   return (
     <>
-        <h1 className="text-5xl font-black text-white">Iniciar Sesión</h1>
+        <h1 className="text-3xl font-bold text-white">Iniciar Sesión</h1>
 
       <form
         onSubmit={handleSubmit(handleLogin)}
@@ -38,7 +38,7 @@ export default function LoginView() {
       >
         <div className="flex flex-col gap-5">
           <label
-            className="text-2xl font-normal"
+            className="text-base font-normal"
           >Email</label>
 
           <input
@@ -61,7 +61,7 @@ export default function LoginView() {
 
         <div className="flex flex-col gap-5">
           <label
-            className="text-2xl font-normal"
+            className="text-base font-normal"
           >Contraseña</label>
 
           <input
@@ -80,7 +80,7 @@ export default function LoginView() {
         <input
           type="submit"
           value='Iniciar Sesión'
-          className="w-full p-3 text-xl font-black text-white transition-colors duration-200 bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
+          className="w-full p-3 text-base font-medium text-white transition-colors duration-200 bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
         />
       </form>
 

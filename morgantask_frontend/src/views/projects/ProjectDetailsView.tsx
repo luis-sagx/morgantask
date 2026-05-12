@@ -26,20 +26,20 @@ export default function ProjectDetailsView() {
     if (isError) return <Navigate to='/404' />
     if (data && user) return (
         <>
-            <h1 className="text-5xl font-black">{data.projectName}</h1>
-            <p className="text-2xl font-light text-gray-500 mt-5">{data.description}</p>
+            <h1 className="text-3xl font-bold">{data.projectName}</h1>
+            <p className="mt-2 text-base font-light text-gray-500">{data.description}</p>
 
             {isManager(data.manager, user._id) && (
-                <nav className="my-5 flex gap-3">
+                <nav className="flex gap-3 my-5">
                     <button
                         type="button"
-                        className="bg-sky-400 hover:bg-sky-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
+                        className="px-4 py-2 font-medium text-white transition-colors rounded-md cursor-pointer bg-sky-400 hover:bg-sky-500"
                         onClick={() => navigate(location.pathname + '?newTask=true')}
                     >Agregar Tarea</button>
 
                     <Link
                         to={'team'}
-                        className="bg-indigo-600 hover:bg-cyan-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors rounded-md"
+                        className="px-4 py-2 font-medium text-white transition-colors bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
                     >Colaboradores</Link>
                 </nav>
             )}

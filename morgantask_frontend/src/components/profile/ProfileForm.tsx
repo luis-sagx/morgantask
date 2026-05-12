@@ -27,8 +27,8 @@ export default function ProfileForm({ data } : ProfileFormProps) {
     return (
         <>
             <div className="mx-auto max-w-3xl g">
-                <h1 className="text-5xl font-black ">Mi Perfil</h1>
-                <p className="text-2xl font-light text-gray-500 mt-5">Aquí puedes actualizar tu información</p>
+                <h1 className="text-3xl font-bold">Mi Perfil</h1>
+                <p className="text-base font-light text-gray-500 mt-2">Aquí puedes actualizar tu información</p>
 
                 <form
                     onSubmit={handleSubmit(handleEditProfile)}
@@ -79,7 +79,7 @@ export default function ProfileForm({ data } : ProfileFormProps) {
                     <input
                         type="submit"
                         value='Guardar Cambios'
-                        className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-cyan-500 cursor-pointer transition-colors rounded-md"
+                        className="bg-indigo-600 w-full p-3 text-white uppercase text-sm font-medium hover:bg-cyan-500 cursor-pointer transition-colors rounded-md"
                     />
                 </form>
             </div>

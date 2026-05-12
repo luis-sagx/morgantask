@@ -83,14 +83,14 @@ export default function TaskModalDetails() {
 
                                     <Dialog.Title
                                         as="h3"
-                                        className="font-black text-4xl text-slate-600 my-5"
+                                        className="font-bold text-2xl text-slate-600 my-4"
                                     >{data.name} </Dialog.Title>
 
-                                    <p className='text-lg text-slate-500 mb-2'>Descripción: {data.description}</p>
+                                    <p className='text-base text-slate-500 mb-2'>Descripción: {data.description}</p>
 
                                     {data.completedBy.length ? (
                                         <>
-                                            <p className='font-bold text-2xl text-slate-600 my-5'>Historial de Cambios</p>
+                                            <p className='font-bold text-lg text-slate-600 my-4'>Historial de Cambios</p>
 
                                             <ul className=' list-decimal'>
                                                 {data.completedBy.map((activityLog) => (

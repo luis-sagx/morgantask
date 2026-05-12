@@ -20,12 +20,12 @@ export default function DashboardView() {
   if (isLoading && authLoading) return 'Cargando...'
   if (data && user) return (
     <>
-      <h1 className="text-5xl font-black">Mis Proyectos</h1>
-      <p className="mt-5 text-2xl font-light text-gray-500">Maneja y administra tus proyectos</p>
+      <h1 className="text-3xl font-bold">Mis Proyectos</h1>
+      <p className="mt-2 text-base font-light text-gray-500">Maneja y administra tus proyectos</p>
 
       <nav className="my-5 ">
         <Link
-          className="px-10 py-3 text-xl font-bold text-white transition-colors cursor-pointer bg-sky-400 hover:bg-sky-500"
+          className="px-4 py-2 font-medium text-white transition-colors rounded-md cursor-pointer bg-sky-400 hover:bg-sky-500"
           to='/projects/create'
         >Nuevo Proyecto</Link>
       </nav>
@@ -43,7 +43,7 @@ export default function DashboardView() {
                     }
                   </div>
                   <Link to={`/projects/${project._id}`}
-                    className="text-3xl font-bold text-gray-600 cursor-pointer hover:underline"
+                    className="text-xl font-semibold text-gray-600 cursor-pointer hover:underline"
                   >{project.projectName}</Link>
                   <p className="text-sm text-gray-400">
                     Cliente: {project.clientName}

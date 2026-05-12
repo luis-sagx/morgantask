@@ -76,10 +76,10 @@ export default function DeleteProjectModal() {
 
                                 <Dialog.Title
                                     as="h3"
-                                    className="font-black text-4xl  my-5"
+                                    className="font-bold text-2xl my-4"
                                 >Eliminar Proyecto </Dialog.Title>
 
-                                <p className="text-xl font-bold">Confirma la eliminación del proyecto {''}
+                                <p className="text-sm font-medium">Confirma la eliminación del proyecto {''}
                                     <span className="text-cyan-500">colocando tu password</span>
                                 </p>
 
@@ -91,7 +91,7 @@ export default function DeleteProjectModal() {
 
                                     <div className="flex flex-col gap-3">
                                         <label
-                                            className="font-normal text-2xl"
+                                            className="font-normal text-base"
                                             htmlFor="password"
                                         >Password</label>
                                         <input
@@ -110,7 +110,7 @@ export default function DeleteProjectModal() {
 
                                     <input
                                         type="submit"
-                                        className=" bg-indigo-600 hover:bg-cyan-500 w-full p-3  text-white font-black  text-xl cursor-pointer rounded-md"
+                                        className="bg-indigo-600 hover:bg-cyan-500 w-full p-3 text-white text-sm font-medium cursor-pointer rounded-md"
                                         value='Eliminar Proyecto'
                                     />
                                 </form>

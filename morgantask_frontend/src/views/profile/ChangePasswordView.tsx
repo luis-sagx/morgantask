@@ -27,8 +27,8 @@ export default function ChangePasswordView() {
     <>
       <div className="mx-auto max-w-3xl">
 
-        <h1 className="text-5xl font-black ">Cambiar Password</h1>
-        <p className="text-2xl font-light text-gray-500 mt-5">Utiliza este formulario para cambiar tu password</p>
+        <h1 className="text-3xl font-bold">Cambiar Password</h1>
+        <p className="text-base font-light text-gray-500 mt-2">Utiliza este formulario para cambiar tu password</p>
 
         <form
           onSubmit={handleSubmit(handleChangePassword)}
@@ -100,7 +100,7 @@ export default function ChangePasswordView() {
           <input
             type="submit"
             value='Cambiar Password'
-            className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-cyan-500 cursor-pointer transition-colors rounded-md"
+            className="bg-indigo-600 w-full p-3 text-white uppercase text-sm font-medium hover:bg-cyan-500 cursor-pointer transition-colors rounded-md"
           />
         </form>
       </div>
