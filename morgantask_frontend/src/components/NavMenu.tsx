@@ -1,5 +1,5 @@
 import { Popover, Transition } from '@headlessui/react'
-import { Bars3Icon } from '@heroicons/react/20/solid'
+import { Cog6ToothIcon } from '@heroicons/react/20/solid'
 import { useQueryClient } from '@tanstack/react-query'
 import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
@@ -19,8 +19,8 @@ export default function NavMenu({name} : NavMenuProps) {
 
   return (
     <Popover className="relative">
-      <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 p-1 rounded-lg bg-sky-400">
-        <Bars3Icon className='w-8 h-8 text-white ' />
+      <Popover.Button className="inline-flex items-center text-gray-300 hover:text-white transition-colors">
+        <Cog6ToothIcon className='w-7 h-7' />
       </Popover.Button>
 
       <Transition

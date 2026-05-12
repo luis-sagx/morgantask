@@ -15,11 +15,13 @@ export default function AppLayout() {
 
     if(data) return (
         <>
-            <header className='py-5 bg-gray-800'>
+            <header className='px-6 py-4 bg-gray-900'>
                 <div className='flex flex-col items-center justify-between mx-auto max-w-screen-2xl lg:flex-row'>
                     <div className='w-64'>
                         <Link to={'/'}>
-                            <Logo />
+                            <div className='w-40'>
+                                <Logo />
+                            </div>
                         </Link>
                     </div>
 
