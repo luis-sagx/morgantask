@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form"
-import ErrorMessage from "@/components/ErrorMessage"
+import { changePassword } from "@/api/ProfileAPI";
+import ErrorMessage from "@/components/ErrorMessage";
 import { UpdateCurrentUserPasswordForm } from "@/types/index";
 import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { changePassword } from "@/api/ProfileAPI";
 
 export default function ChangePasswordView() {
   const initialValues : UpdateCurrentUserPasswordForm = {
@@ -25,28 +25,27 @@ export default function ChangePasswordView() {
 
   return (
     <>
-      <div className="mx-auto max-w-3xl">
+      <div className="max-w-3xl mx-auto">
 
-        <h1 className="text-3xl font-bold">Cambiar Password</h1>
-        <p className="text-base font-light text-gray-500 mt-2">Utiliza este formulario para cambiar tu password</p>
+        <h1 className="text-3xl font-bold">Cambiar Contraseña</h1>
 
         <form
           onSubmit={handleSubmit(handleChangePassword)}
-          className=" mt-14 space-y-5 bg-white shadow-lg p-10 rounded-lg"
+          className="p-10 space-y-5 bg-white rounded-lg shadow-lg mt-14"
           noValidate
         >
           <div className="mb-5 space-y-3">
             <label
-              className="text-sm uppercase font-bold"
+              className="text-sm font-bold uppercase"
               htmlFor="current_password"
-            >Password Actual</label>
+            >Contraseña Actual</label>
             <input
               id="current_password"
               type="password"
-              placeholder="Password Actual"
-              className="w-full p-3  border border-gray-200"
+              placeholder="Contraseña Actual"
+              className="w-full p-3 border border-gray-200"
               {...register("current_password", {
-                required: "El password actual es obligatorio",
+                required: "La contraseña actual es obligatoria",
               })}
             />
             {errors.current_password && (
@@ -56,19 +55,19 @@ export default function ChangePasswordView() {
 
           <div className="mb-5 space-y-3">
             <label
-              className="text-sm uppercase font-bold"
+              className="text-sm font-bold uppercase"
               htmlFor="password"
-            >Nuevo Password</label>
+            >Nueva Contraseña</label>
             <input
               id="password"
               type="password"
-              placeholder="Nuevo Password"
-              className="w-full p-3  border border-gray-200"
+              placeholder="Nueva Contraseña"
+              className="w-full p-3 border border-gray-200"
               {...register("password", {
-                required: "El Nuevo Password es obligatorio",
+                required: "La nueva contraseña es obligatoria",
                 minLength: {
                   value: 8,
-                  message: 'El Password debe ser mínimo de 8 caracteres'
+                  message: 'La contraseña debe ser mínima de 8 caracteres'
                 }
               })}
             />
@@ -79,17 +78,17 @@ export default function ChangePasswordView() {
           <div className="mb-5 space-y-3">
             <label
               htmlFor="password_confirmation"
-              className="text-sm uppercase font-bold"
-            >Repetir Password</label>
+              className="text-sm font-bold uppercase"
+            >Repetir Contraseña</label>
 
             <input
               id="password_confirmation"
               type="password"
-              placeholder="Repetir Password"
-              className="w-full p-3  border border-gray-200"
+              placeholder="Repetir Contraseña"
+              className="w-full p-3 border border-gray-200"
               {...register("password_confirmation", {
                 required: "Este campo es obligatorio",
-                validate: value => value === password || 'Los Passwords no son iguales'
+                validate: value => value === password || 'Las contraseñas no son iguales'
               })}
             />
             {errors.password_confirmation && (
@@ -99,8 +98,8 @@ export default function ChangePasswordView() {
 
           <input
             type="submit"
-            value='Cambiar Password'
-            className="bg-indigo-600 w-full p-3 text-white uppercase text-sm font-medium hover:bg-cyan-500 cursor-pointer transition-colors rounded-md"
+            value='Cambiar Contraseña'
+            className="w-full p-3 text-sm font-medium text-white uppercase transition-colors bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
           />
         </form>
       </div>

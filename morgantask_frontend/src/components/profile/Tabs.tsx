@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const tabs = [
     { name: 'Mi Cuenta', href: '/profile', icon: UserIcon },
-    { name: 'Cambiar Password', href: '/profile/password', icon: FingerPrintIcon },
+    { name: 'Cambiar Contraseña', href: '/profile/password', icon: FingerPrintIcon },
 ]
 
 function classNames(...classes: string[]) {
@@ -24,7 +24,7 @@ export default function Tabs() {
                 <select
                     id="tabs"
                     name="tabs"
-                    className="block w-full rounded-md border-gray-300 focus:border-sky-800 focus:ring-sky-800"
+                    className="block w-full border-gray-300 rounded-md focus:border-sky-800 focus:ring-sky-800"
                     onChange={ (e: React.ChangeEvent<HTMLSelectElement>) => navigate(e.target.value) }
                     value={currentTab}
                 >
@@ -40,7 +40,7 @@ export default function Tabs() {
 
             <div className="hidden sm:block">
                 <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                    <nav className="flex -mb-px space-x-8" aria-label="Tabs">
                         {tabs.map((tab) => (
                             <Link
                                 key={tab.name}
