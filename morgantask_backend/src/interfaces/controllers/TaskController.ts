@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express'
-import { taskUseCases } from '../../infrastructure/container'
+
 import { TaskStatus } from '../../domain/entities/Task'
+import { taskUseCases } from '../../infrastructure/container'
 
 export class TaskController {
     static createTask = async (req: Request, res: Response) => {

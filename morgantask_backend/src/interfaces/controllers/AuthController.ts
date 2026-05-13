@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+
 import { authUseCases } from '../../infrastructure/container'
 
 export class AuthController {
