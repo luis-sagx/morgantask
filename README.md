@@ -596,7 +596,7 @@ test("Caso 2: Al eliminar una tarea, debe desvincularse del proyecto", async () 
 - Esto previene el problema de **"datos huérfanos"**: identificadores de tareas que ya no existen permaneciendo en el arreglo `tasks[]` del proyecto en MongoDB.
 - Ambas aserciones juntas prueban que la eliminación es **atómica a nivel de lógica de negocio**.
 - 
-![ terminal mostrando los 2 checks verdes de TaskUseCases.test.ts](screenshots_test/captura5.png)
+![ terminal mostrando los 2 checks verdes de TaskUseCases.test.ts](screenshots_test/captura3.png)
 
 > *Descripción: Terminal con `✓ Caso 1` y `✓ Caso 2` en verde bajo la línea `PASS src/__tests__/TaskUseCases.test.ts`.*
 
@@ -622,7 +622,7 @@ docker compose exec backend sh -c "pnpm test -- --coverage"
 > El **100% de Branch Coverage** en `ProjectUseCases.ts` es el indicador más importante: significa que **cada decisión lógica del código** (¿existe el proyecto? ¿el usuario tiene permiso?) fue evaluada tanto cuando la condición es verdadera como cuando es falsa. No existe ningún camino lógico sin probar.
 
 
-![ tabla de cobertura en la terminal](screenshots_test/captura6.png)
+![ tabla de cobertura en la terminal](screenshots_test/captura5.png)
 
 > 📸 **[FIGURA 6 — Insertar aquí: foto completa de la tabla de cobertura en la terminal]**
 > *Descripción: Tabla con columnas File / % Stmts / % Branch / % Funcs / % Lines. Se resaltan las filas de `ProjectUseCases.ts` con 100% en Branch y las filas de `infrastructure/security` con 100% en todas las columnas.*
@@ -642,13 +642,13 @@ docker compose exec backend sh -c "pnpm test -- --coverage"
 
 Resultado consolidado:
 
-- **2 archivos de prueba ejecutados**
-- **2 pruebas exitosas**
+- **4 archivos de prueba ejecutados**
+- **10 pruebas exitosas**
 - **0 errores**
 
 ### Evidencia final
 
-![Resultado final frontend](screenshots_test/frontend-final-pass.png)
+![Resultado final frontend](screenshots_test/captura7.png)
 
 **Figura 7.** Resultado exitoso de pruebas del frontend con Vitest.
 
