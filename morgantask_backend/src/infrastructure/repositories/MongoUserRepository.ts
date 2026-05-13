@@ -1,4 +1,4 @@
-import { IUser } from '../../domain/entities/User'
+import { IUser, IPublicUser } from '../../domain/entities/User'
 import { IUserRepository } from '../../domain/ports/IUserRepository'
 import UserModel, { IUserDoc } from '../models/UserModel'
 
@@ -40,7 +40,7 @@ export class MongoUserRepository implements IUserRepository {
         }
     }
 
-    async findByEmailPublic(email: string): Promise<{ _id: string; email: string; name: string } | null> {
+    async findByEmailPublic(email: string): Promise<IPublicUser | null> {
         const user = await UserModel.findOne({ email }).select('_id email name')
         if (!user) return null
         return { _id: user.id.toString(), email: user.email, name: user.name }

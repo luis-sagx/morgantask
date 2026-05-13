@@ -1,4 +1,5 @@
 import { IProject } from '../../domain/entities/Project'
+import { IPublicUser } from '../../domain/entities/User'
 import { IProjectRepository } from '../../domain/ports/IProjectRepository'
 import ProjectModel, { IProjectDoc } from '../models/ProjectModel'
 
@@ -66,7 +67,7 @@ export class MongoProjectRepository implements IProjectRepository {
         await ProjectModel.findByIdAndUpdate(projectId, { $pull: { team: userId } })
     }
 
-    async getTeamPopulated(projectId: string): Promise<IUser[]> {
+    async getTeamPopulated(projectId: string): Promise<IPublicUser[]> {
         const project = await ProjectModel.findById(projectId).populate({
             path: 'team',
             select: 'id email name'

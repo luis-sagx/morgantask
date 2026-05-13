@@ -5,3 +5,9 @@ export interface IUser {
     name: string
     confirmed: boolean
 }
+
+export interface IPublicUser {
+    _id: string
+    email: string
+    name: string
+}

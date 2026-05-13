@@ -1,5 +1,5 @@
 import { IProject } from '../entities/Project'
-import { IUser } from '../entities/User'
+import { IPublicUser } from '../entities/User'
 
 export interface IProjectRepository {
     create(data: Omit<IProject, '_id' | 'tasks' | 'team'>): Promise<IProject>
@@ -12,5 +12,5 @@ export interface IProjectRepository {
     removeTask(projectId: string, taskId: string): Promise<void>
     addMember(projectId: string, userId: string): Promise<void>
     removeMember(projectId: string, userId: string): Promise<void>
-    getTeamPopulated(projectId: string): Promise<IUser[]>
+    getTeamPopulated(projectId: string): Promise<IPublicUser[]>
 }
