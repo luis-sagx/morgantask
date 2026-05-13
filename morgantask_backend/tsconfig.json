@@ -1,15 +1,18 @@
 {
     "compilerOptions": {
+        
         "outDir": "./dist",
         "rootDir": "./src",
         "lib": [
             "esnext"
         ],
         "target": "ESNext",
-        "moduleResolution": "Node",
-        "module": "commonjs",
-        "strict": false,
-        "sourceMap": true,
+"moduleResolution": "NodeNext",
+"types": ["node", "jest"],
+"module": "NodeNext",
+"strict": false,
+"sourceMap": true,
+        "isolatedModules": true,
         "esModuleInterop": true,
         "declaration": false,
         "baseUrl": ".",
