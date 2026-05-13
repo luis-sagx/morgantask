@@ -1,3 +1,4 @@
+import { IUser } from '../../domain/entities/User'
 import { IProjectRepository } from '../../domain/ports/IProjectRepository'
 import { IUserRepository } from '../../domain/ports/IUserRepository'
 
@@ -7,13 +8,13 @@ export class TeamUseCases {
         private userRepository: IUserRepository
     ) {}
 
-    async findMemberByEmail(email: string): Promise<{ _id: string; email: string; name: string }> {
+    async findMemberByEmail(email: string): Promise<IUser> {
         const user = await this.userRepository.findByEmailPublic(email)
         if (!user) throw new Error('Usuario No Encontrado')
         return user
     }
 
-    async getTeam(projectId: string): Promise<any> {
+    async getTeam(projectId: string): Promise<IUser[]> {
         return this.projectRepository.getTeamPopulated(projectId)
     }
 

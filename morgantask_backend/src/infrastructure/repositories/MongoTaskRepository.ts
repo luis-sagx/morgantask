@@ -34,10 +34,11 @@ export class MongoTaskRepository implements ITaskRepository {
         return task ? this.toEntity(task) : null
     }
 
-    async findByIdWithDetails(id: string): Promise<any> {
-        return TaskModel.findById(id)
+    async findByIdWithDetails(id: string): Promise<ITask | null> {
+        const task = await TaskModel.findById(id)
             .populate({ path: 'completedBy.user', select: 'id name email' })
             .populate({ path: 'notes', populate: { path: 'createdBy', select: 'id name email' } })
+        return task ? this.toEntity(task) : null
     }
 
     async update(id: string, data: Pick<ITask, 'name' | 'description'>): Promise<void> {

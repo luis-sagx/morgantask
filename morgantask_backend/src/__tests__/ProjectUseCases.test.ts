@@ -1,4 +1,5 @@
 import { ProjectUseCases } from "../application/usecases/ProjectUseCases";
+import { IProject } from "../domain/entities/Project";
 import { IProjectRepository } from "../domain/ports/IProjectRepository";
 
 const projectRepositoryMock: jest.Mocked<IProjectRepository> = {
@@ -21,14 +22,16 @@ describe("ProjectUseCases", () => {
   });
 
   test("debe crear un proyecto correctamente", async () => {
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
       projectName: "Nuevo Proyecto",
       clientName: "Cliente",
       description: "Descripción",
-      manager: "user-1"
+      manager: "user-1",
+      tasks: [],
+      team: []
     };
-    projectRepositoryMock.create.mockResolvedValue(mockProject as any);
+    projectRepositoryMock.create.mockResolvedValue(mockProject);
 
     const projectUseCases = new ProjectUseCases(projectRepositoryMock);
 
@@ -49,11 +52,11 @@ describe("ProjectUseCases", () => {
   });
 
   test("debe obtener todos los proyectos de un usuario", async () => {
-    const mockProjects = [
-      { _id: "project-1", projectName: "Proyecto 1", clientName: "Cliente 1" },
-      { _id: "project-2", projectName: "Proyecto 2", clientName: "Cliente 2" }
+    const mockProjects: IProject[] = [
+      { _id: "project-1", projectName: "Proyecto 1", clientName: "Cliente 1", description: "", manager: "user-1", tasks: [], team: [] },
+      { _id: "project-2", projectName: "Proyecto 2", clientName: "Cliente 2", description: "", manager: "user-1", tasks: [], team: [] }
     ];
-    projectRepositoryMock.findByUser.mockResolvedValue(mockProjects as any);
+    projectRepositoryMock.findByUser.mockResolvedValue(mockProjects);
 
     const projectUseCases = new ProjectUseCases(projectRepositoryMock);
 
@@ -64,14 +67,15 @@ describe("ProjectUseCases", () => {
   });
 
   test("debe obtener un proyecto por ID para el manager", async () => {
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
       projectName: "Proyecto",
       clientName: "Cliente",
+      description: "",
       manager: "user-1",
       team: []
     };
-    projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject as any);
+    projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);
 
     const projectUseCases = new ProjectUseCases(projectRepositoryMock);
 
@@ -82,14 +86,15 @@ describe("ProjectUseCases", () => {
   });
 
   test("debe obtener un proyecto por ID para un miembro del equipo", async () => {
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
       projectName: "Proyecto",
       clientName: "Cliente",
+      description: "",
       manager: "user-1",
       team: ["user-2", "user-3"]
     };
-    projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject as any);
+    projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);
 
     const projectUseCases = new ProjectUseCases(projectRepositoryMock);
 
@@ -107,14 +112,15 @@ describe("ProjectUseCases", () => {
   });
 
   test("debe lanzar error si el usuario no es manager ni miembro", async () => {
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
       projectName: "Proyecto",
       clientName: "Cliente",
+      description: "",
       manager: "user-1",
       team: ["user-2"]
     };
-    projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject as any);
+    projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);
 
     const projectUseCases = new ProjectUseCases(projectRepositoryMock);
 

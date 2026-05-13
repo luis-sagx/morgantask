@@ -1,4 +1,5 @@
 import { NoteUseCases } from "../application/usecases/NoteUseCases";
+import { INote } from "../domain/entities/Note";
 import { INoteRepository } from "../domain/ports/INoteRepository";
 import { ITaskRepository } from "../domain/ports/ITaskRepository";
 
@@ -27,13 +28,13 @@ describe("NoteUseCases", () => {
   });
 
   test("debe crear una nota correctamente", async () => {
-    const mockNote = {
+    const mockNote: INote = {
       _id: "note-1",
       content: "Contenido de la nota",
       createdBy: "user-1",
       task: "task-1"
     };
-    noteRepositoryMock.create.mockResolvedValue(mockNote as any);
+    noteRepositoryMock.create.mockResolvedValue(mockNote);
 
     const noteUseCases = new NoteUseCases(noteRepositoryMock, taskRepositoryMock);
 
@@ -53,11 +54,11 @@ describe("NoteUseCases", () => {
   });
 
   test("debe obtener notas por tarea", async () => {
-    const mockNotes = [
+    const mockNotes: INote[] = [
       { _id: "note-1", content: "Nota 1", createdBy: "user-1", task: "task-1" },
       { _id: "note-2", content: "Nota 2", createdBy: "user-2", task: "task-1" }
     ];
-    noteRepositoryMock.findByTask.mockResolvedValue(mockNotes as any);
+    noteRepositoryMock.findByTask.mockResolvedValue(mockNotes);
 
     const noteUseCases = new NoteUseCases(noteRepositoryMock, taskRepositoryMock);
 
@@ -68,13 +69,13 @@ describe("NoteUseCases", () => {
   });
 
   test("debe eliminar una nota correctamente", async () => {
-    const mockNote = {
+    const mockNote: INote = {
       _id: "note-1",
       content: "Contenido",
       createdBy: "user-1",
       task: "task-1"
     };
-    noteRepositoryMock.findById.mockResolvedValue(mockNote as any);
+    noteRepositoryMock.findById.mockResolvedValue(mockNote);
 
     const noteUseCases = new NoteUseCases(noteRepositoryMock, taskRepositoryMock);
 
@@ -96,13 +97,13 @@ describe("NoteUseCases", () => {
   });
 
   test("debe lanzar error si el usuario no es el creador", async () => {
-    const mockNote = {
+    const mockNote: INote = {
       _id: "note-1",
       content: "Contenido",
       createdBy: "user-1",
       task: "task-1"
     };
-    noteRepositoryMock.findById.mockResolvedValue(mockNote as any);
+    noteRepositoryMock.findById.mockResolvedValue(mockNote);
 
     const noteUseCases = new NoteUseCases(noteRepositoryMock, taskRepositoryMock);
 

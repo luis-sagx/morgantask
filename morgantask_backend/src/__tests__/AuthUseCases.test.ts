@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import { AuthUseCases } from "../application/usecases/AuthUseCases";
 import { IUserRepository } from "../domain/ports/IUserRepository";
 
@@ -65,7 +67,7 @@ describe("AuthUseCases", () => {
       _id: "1",
       name: "Jeff",
       email: "jeff@test.com",
-      password: await require("bcrypt").hash("123456", 10),
+      password: await bcrypt.hash("123456", 10),
       confirmed: true
     });
 
@@ -98,7 +100,7 @@ describe("AuthUseCases", () => {
       _id: "1",
       name: "Jeff",
       email: "jeff@test.com",
-      password: await require("bcrypt").hash("passwordcorrecta", 10),
+      password: await bcrypt.hash("passwordcorrecta", 10),
       confirmed: true
     });
 
@@ -177,7 +179,7 @@ describe("AuthUseCases", () => {
       _id: "1",
       name: "Usuario",
       email: "usuario@test.com",
-      password: await require("bcrypt").hash("passwordactual", 10),
+      password: await bcrypt.hash("passwordactual", 10),
       confirmed: true
     });
 
@@ -205,7 +207,7 @@ describe("AuthUseCases", () => {
       _id: "1",
       name: "Usuario",
       email: "usuario@test.com",
-      password: await require("bcrypt").hash("passwordcorrecta", 10),
+      password: await bcrypt.hash("passwordcorrecta", 10),
       confirmed: true
     });
 
@@ -221,7 +223,7 @@ describe("AuthUseCases", () => {
       _id: "1",
       name: "Usuario",
       email: "usuario@test.com",
-      password: await require("bcrypt").hash("passwordcorrecta", 10),
+      password: await bcrypt.hash("passwordcorrecta", 10),
       confirmed: true
     });
 
@@ -247,7 +249,7 @@ describe("AuthUseCases", () => {
       _id: "1",
       name: "Usuario",
       email: "usuario@test.com",
-      password: await require("bcrypt").hash("passwordcorrecta", 10),
+      password: await bcrypt.hash("passwordcorrecta", 10),
       confirmed: true
     });
 

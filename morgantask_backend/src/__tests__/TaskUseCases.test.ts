@@ -1,4 +1,5 @@
 import { TaskUseCases } from "../application/usecases/TaskUseCases";
+import { ITask } from "../domain/entities/Task";
 import { IProjectRepository } from "../domain/ports/IProjectRepository";
 import { ITaskRepository } from "../domain/ports/ITaskRepository";
 
@@ -34,13 +35,16 @@ describe("TaskUseCases", () => {
   });
 
   test("debe crear una tarea correctamente", async () => {
-    const mockTask = {
+    const mockTask: ITask = {
       _id: "task-1",
       name: "Nueva Tarea",
       description: "Descripción",
-      project: "project-1"
+      project: "project-1",
+      status: "pending",
+      completedBy: [],
+      notes: []
     };
-    taskRepositoryMock.create.mockResolvedValue(mockTask as any);
+    taskRepositoryMock.create.mockResolvedValue(mockTask);
 
     const taskUseCases = new TaskUseCases(taskRepositoryMock, projectRepositoryMock);
 
@@ -60,11 +64,11 @@ describe("TaskUseCases", () => {
   });
 
   test("debe obtener tareas por proyecto", async () => {
-    const mockTasks = [
-      { _id: "task-1", name: "Tarea 1", description: "Desc 1", project: "project-1" },
-      { _id: "task-2", name: "Tarea 2", description: "Desc 2", project: "project-1" }
+    const mockTasks: ITask[] = [
+      { _id: "task-1", name: "Tarea 1", description: "Desc 1", project: "project-1", status: "pending", completedBy: [], notes: [] },
+      { _id: "task-2", name: "Tarea 2", description: "Desc 2", project: "project-1", status: "pending", completedBy: [], notes: [] }
     ];
-    taskRepositoryMock.findByProject.mockResolvedValue(mockTasks as any);
+    taskRepositoryMock.findByProject.mockResolvedValue(mockTasks);
 
     const taskUseCases = new TaskUseCases(taskRepositoryMock, projectRepositoryMock);
 
@@ -75,8 +79,8 @@ describe("TaskUseCases", () => {
   });
 
   test("debe obtener una tarea por ID", async () => {
-    const mockTask = { _id: "task-1", name: "Tarea", description: "Desc" };
-    taskRepositoryMock.findByIdWithDetails.mockResolvedValue(mockTask as any);
+    const mockTask: ITask = { _id: "task-1", name: "Tarea", description: "Desc", project: "project-1", status: "pending", completedBy: [], notes: [] };
+    taskRepositoryMock.findByIdWithDetails.mockResolvedValue(mockTask);
 
     const taskUseCases = new TaskUseCases(taskRepositoryMock, projectRepositoryMock);
 
@@ -120,7 +124,7 @@ describe("TaskUseCases", () => {
   test("debe actualizar el estado de una tarea", async () => {
     const taskUseCases = new TaskUseCases(taskRepositoryMock, projectRepositoryMock);
 
-    await taskUseCases.updateStatus("task-1", "user-1", "completed" as any);
+    await taskUseCases.updateStatus("task-1", "user-1", "completed");
 
     expect(taskRepositoryMock.updateStatus).toHaveBeenCalledWith("task-1", "user-1", "completed");
   });

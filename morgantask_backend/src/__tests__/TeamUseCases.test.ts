@@ -1,4 +1,6 @@
 import { TeamUseCases } from "../application/usecases/TeamUseCases";
+import { IProject } from "../domain/entities/Project";
+import { IUser } from "../domain/entities/User";
 import { IProjectRepository } from "../domain/ports/IProjectRepository";
 import { IUserRepository } from "../domain/ports/IUserRepository";
 
@@ -31,12 +33,14 @@ describe("TeamUseCases", () => {
   });
 
   test("debe buscar un miembro por email", async () => {
-    const mockUser = {
+    const mockUser: IUser = {
       _id: "user-1",
       email: "miembro@test.com",
-      name: "Miembro"
+      name: "Miembro",
+      password: "",
+      confirmed: true
     };
-    userRepositoryMock.findByEmailPublic.mockResolvedValue(mockUser as any);
+    userRepositoryMock.findByEmailPublic.mockResolvedValue(mockUser);
 
     const teamUseCases = new TeamUseCases(projectRepositoryMock, userRepositoryMock);
 
@@ -57,11 +61,11 @@ describe("TeamUseCases", () => {
   });
 
   test("debe obtener el equipo de un proyecto", async () => {
-    const mockTeam = [
-      { _id: "user-1", name: "Usuario 1", email: "user1@test.com" },
-      { _id: "user-2", name: "Usuario 2", email: "user2@test.com" }
+    const mockTeam: IUser[] = [
+      { _id: "user-1", name: "Usuario 1", email: "user1@test.com", password: "", confirmed: true },
+      { _id: "user-2", name: "Usuario 2", email: "user2@test.com", password: "", confirmed: true }
     ];
-    projectRepositoryMock.getTeamPopulated.mockResolvedValue(mockTeam as any);
+    projectRepositoryMock.getTeamPopulated.mockResolvedValue(mockTeam);
 
     const teamUseCases = new TeamUseCases(projectRepositoryMock, userRepositoryMock);
 
@@ -72,17 +76,24 @@ describe("TeamUseCases", () => {
   });
 
   test("debe agregar un miembro al proyecto", async () => {
-    const mockUser = {
+    const mockUser: IUser = {
       _id: "user-1",
       email: "nuevo@test.com",
-      name: "Nuevo"
+      name: "Nuevo",
+      password: "",
+      confirmed: true
     };
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
+      projectName: "",
+      clientName: "",
+      description: "",
+      manager: "",
+      tasks: [],
       team: ["user-2"]
     };
-    userRepositoryMock.findByIdPublic.mockResolvedValue(mockUser as any);
-    projectRepositoryMock.findById.mockResolvedValue(mockProject as any);
+    userRepositoryMock.findByIdPublic.mockResolvedValue(mockUser);
+    projectRepositoryMock.findById.mockResolvedValue(mockProject);
 
     const teamUseCases = new TeamUseCases(projectRepositoryMock, userRepositoryMock);
 
@@ -104,17 +115,24 @@ describe("TeamUseCases", () => {
   });
 
   test("debe lanzar error si el usuario ya está en el proyecto", async () => {
-    const mockUser = {
+    const mockUser: IUser = {
       _id: "user-1",
       email: "existente@test.com",
-      name: "Existente"
+      name: "Existente",
+      password: "",
+      confirmed: true
     };
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
+      projectName: "",
+      clientName: "",
+      description: "",
+      manager: "",
+      tasks: [],
       team: ["user-1", "user-2"]
     };
-    userRepositoryMock.findByIdPublic.mockResolvedValue(mockUser as any);
-    projectRepositoryMock.findById.mockResolvedValue(mockProject as any);
+    userRepositoryMock.findByIdPublic.mockResolvedValue(mockUser);
+    projectRepositoryMock.findById.mockResolvedValue(mockProject);
 
     const teamUseCases = new TeamUseCases(projectRepositoryMock, userRepositoryMock);
 
@@ -124,11 +142,16 @@ describe("TeamUseCases", () => {
   });
 
   test("debe remover un miembro del proyecto", async () => {
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
+      projectName: "",
+      clientName: "",
+      description: "",
+      manager: "",
+      tasks: [],
       team: ["user-1", "user-2"]
     };
-    projectRepositoryMock.findById.mockResolvedValue(mockProject as any);
+    projectRepositoryMock.findById.mockResolvedValue(mockProject);
 
     const teamUseCases = new TeamUseCases(projectRepositoryMock, userRepositoryMock);
 
@@ -139,11 +162,16 @@ describe("TeamUseCases", () => {
   });
 
   test("debe lanzar error si el usuario no está en el proyecto", async () => {
-    const mockProject = {
+    const mockProject: IProject = {
       _id: "project-1",
+      projectName: "",
+      clientName: "",
+      description: "",
+      manager: "",
+      tasks: [],
       team: ["user-2", "user-3"]
     };
-    projectRepositoryMock.findById.mockResolvedValue(mockProject as any);
+    projectRepositoryMock.findById.mockResolvedValue(mockProject);
 
     const teamUseCases = new TeamUseCases(projectRepositoryMock, userRepositoryMock);
 

@@ -54,12 +54,16 @@ jest.mock('../infrastructure/repositories/MongoNoteRepository', () => ({
 }));
 
 // Import container after mocks are set up
-import { authUseCases, projectUseCases, taskUseCases, noteUseCases, teamUseCases } from '../infrastructure/container';
+import { authUseCases } from '../infrastructure/container';
 import { AuthController } from '../interfaces/controllers/AuthController';
 
 describe('AuthController', () => {
-  let mockReq: any;
-  let mockRes: any;
+  let mockReq: { body: Record<string, unknown>; user: { id: string } };
+  let mockRes: {
+    status: jest.Mock;
+    json: jest.Mock;
+    send: jest.Mock;
+  };
   let jsonMock: jest.Mock;
   let sendMock: jest.Mock;
   let statusMock: jest.Mock;

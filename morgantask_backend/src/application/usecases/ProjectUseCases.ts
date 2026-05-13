@@ -12,12 +12,12 @@ export class ProjectUseCases {
         return this.projectRepository.findByUser(userId)
     }
 
-    async getById(projectId: string, userId: string): Promise<any> {
+    async getById(projectId: string, userId: string): Promise<IProject> {
         const project = await this.projectRepository.findByIdWithTasks(projectId)
         if (!project) throw new Error('Proyecto no encontrado')
 
         const managerId = project.manager.toString()
-        const inTeam = project.team.some((t: any) => t.toString() === userId)
+        const inTeam = project.team.some((t) => t.toString() === userId)
         if (managerId !== userId && !inTeam) throw new Error('Acción no válida')
 
         return project

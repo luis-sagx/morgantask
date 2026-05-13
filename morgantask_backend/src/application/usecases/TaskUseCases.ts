@@ -22,7 +22,7 @@ export class TaskUseCases {
         return this.taskRepository.findByProject(projectId)
     }
 
-    async getById(taskId: string): Promise<any> {
+    async getById(taskId: string): Promise<ITask> {
         const task = await this.taskRepository.findByIdWithDetails(taskId)
         if (!task) throw new Error('Tarea no encontrada')
         return task

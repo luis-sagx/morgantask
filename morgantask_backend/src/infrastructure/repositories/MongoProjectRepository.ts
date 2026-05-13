@@ -36,8 +36,9 @@ export class MongoProjectRepository implements IProjectRepository {
         return project ? this.toEntity(project) : null
     }
 
-    async findByIdWithTasks(id: string): Promise<any> {
-        return ProjectModel.findById(id).populate('tasks')
+    async findByIdWithTasks(id: string): Promise<IProject | null> {
+        const project = await ProjectModel.findById(id).populate('tasks')
+        return project ? this.toEntity(project) : null
     }
 
     async update(id: string, data: Pick<IProject, 'projectName' | 'clientName' | 'description'>): Promise<void> {
@@ -65,11 +66,19 @@ export class MongoProjectRepository implements IProjectRepository {
         await ProjectModel.findByIdAndUpdate(projectId, { $pull: { team: userId } })
     }
 
-    async getTeamPopulated(projectId: string): Promise<any> {
+    async getTeamPopulated(projectId: string): Promise<IUser[]> {
         const project = await ProjectModel.findById(projectId).populate({
             path: 'team',
             select: 'id email name'
         })
-        return project?.team ?? []
+        const team = project?.team ?? []
+        return team.map((m: unknown) => {
+            const member = m as { _id?: { toString(): string }; email?: string; name?: string }
+            return {
+                _id: member._id?.toString() ?? '',
+                email: member.email ?? '',
+                name: member.name ?? ''
+            }
+        })
     }
 }
