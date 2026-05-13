@@ -24,7 +24,7 @@ export default function NoteDetail({ note }: NoteDetailProps) {
     const taskId = queryParams.get('viewTask')!
 
     const queryClient = useQueryClient()
-    const { mutate } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: deleteNote,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {
@@ -36,10 +36,12 @@ export default function NoteDetail({ note }: NoteDetailProps) {
     if (isLoading) return 'Cargando...'
 
     return (
-        <div className="p-3 flex justify-between items-center">
+        <div className="flex items-center justify-between p-3">
             <div>
                 <p>
-                    {note.content} por: <span className="font-bold">{note.createdBy.name}</span>
+                    {note.content} 
+                    <br />
+                    <span className="text-sm font-bold">por: {note.createdBy.name}</span>
                 </p>
                 <p className="text-xs text-slate-500">
                     {formatDate(note.createdAt)}
@@ -49,7 +51,7 @@ export default function NoteDetail({ note }: NoteDetailProps) {
             {canDelete && (
                 <button
                     type="button"
-                    className="bg-red-400 hover:bg-red-500 p-2 text-xs text-white font-bold cursor-pointer transition-colors"
+                    className="p-2 text-sm font-bold text-white transition-colors bg-red-400 rounded-md cursor-pointer hover:bg-red-500"
                     onClick={() => mutate({projectId, taskId, noteId: note._id})}
                 >Eliminar</button>
             )}

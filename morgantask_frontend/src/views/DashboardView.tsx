@@ -45,10 +45,10 @@ export default function DashboardView() {
                   <Link to={`/projects/${project._id}`}
                     className="text-xl font-semibold text-gray-600 cursor-pointer hover:underline"
                   >{project.projectName}</Link>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-600">
                     Cliente: {project.clientName}
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-600">
                     {project.description}
                   </p>
                 </div>
