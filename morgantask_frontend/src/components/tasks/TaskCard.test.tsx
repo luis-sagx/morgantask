@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import TaskCard from './TaskCard'
+import type { Task } from '@/types'
 
 vi.mock('@/api/TaskAPI')
 vi.mock('react-toastify')
@@ -32,16 +33,16 @@ describe('TaskCard', () => {
     vi.clearAllMocks()
   })
 
-  const mockTask = {
+  const mockTask: Task = {
     _id: 'task123',
     name: 'Test Task',
     description: 'Test Description',
-    status: 'todo' as const,
+    status: 'pending',
     project: 'proj123',
-    assigned: null,
-    priority: 'medium' as const,
-    createdAt: new Date(),
-    updatedAt: new Date()
+    completedBy: [],
+    notes: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 
   it('debe renderizar el nombre de la tarea', () => {
@@ -84,7 +85,7 @@ describe('TaskCard', () => {
   })
 
   it('permite hacer click en el botón eliminar cuando canEdit es true', () => {
-    vi.mocked(deleteTask).mockResolvedValue('Tarea eliminada' as any)
+    vi.mocked(deleteTask).mockResolvedValue('Tarea eliminada')
 
     render(<TaskCard task={mockTask} canEdit={true} />, { wrapper: createWrapper() })
     const menuButton = screen.getByRole('button', { name: /opciones/i })

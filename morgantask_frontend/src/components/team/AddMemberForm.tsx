@@ -25,8 +25,8 @@ export default function AddMemberForm() {
     }
 
     const resetData = () => {
-        reset(),
-        mutation.reset()
+        reset();
+        mutation.reset();
     }
 
     return (

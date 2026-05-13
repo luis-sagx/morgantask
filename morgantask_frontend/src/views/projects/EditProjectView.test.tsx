@@ -7,7 +7,7 @@ import EditProjectView from './EditProjectView'
 
 vi.mock('@/api/ProjectAPI')
 vi.mock('@/components/projects/EditProjectForm', () => ({
-  default: ({ data, projectId }: any) => <div>EditProjectForm - {projectId}</div>
+  default: ({ projectId }: { projectId: string }) => <div>EditProjectForm - {projectId}</div>
 }))
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
@@ -49,12 +49,10 @@ describe('EditProjectView', () => {
       _id: 'proj123',
       projectName: 'Test Project',
       clientName: 'Test Client',
-      description: 'Test Description',
-      manager: 'user123',
-      tasks: []
+      description: 'Test Description'
     }
 
-    vi.mocked(getProjectById).mockResolvedValue(mockProject as any)
+    vi.mocked(getProjectById).mockResolvedValue(mockProject as unknown as ReturnType<typeof getProjectById>)
 
     render(<EditProjectView />, { wrapper: createWrapper() })
 

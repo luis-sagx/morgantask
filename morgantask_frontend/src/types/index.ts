@@ -1,4 +1,10 @@
+import { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { z } from 'zod'
+
+// Re-export FieldErrors for convenience in tests
+export type { FieldErrors, UseFormRegister }
+
+export type { FieldErrors as FieldErrorsType }
 
 /** Auth & Users */
 const authSchema = z.object({

@@ -4,10 +4,11 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import EditTaskData from './EditTaskData'
+import type { Task } from '@/types'
 
 vi.mock('@/api/TaskAPI')
 vi.mock('./EditTaskModal', () => ({
-  default: ({ data, taskId }: any) => <div>EditTaskModal - {taskId}</div>
+  default: ({ taskId }: { taskId: string }) => <div>EditTaskModal - {taskId}</div>
 }))
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
@@ -39,19 +40,19 @@ describe('EditTaskData', () => {
   })
 
   it('debe renderizar el modal de edición cuando hay datos', async () => {
-    const mockTask = {
+    const mockTask: Task = {
       _id: 'task123',
       name: 'Test Task',
       description: 'Test Description',
-      status: 'todo' as const,
+      status: 'pending',
       project: 'proj123',
-      assigned: null,
-      priority: 'medium' as const,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      completedBy: [],
+      notes: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
 
-    vi.mocked(getTaskById).mockResolvedValue(mockTask as any)
+    vi.mocked(getTaskById).mockResolvedValue(mockTask)
 
     render(<EditTaskData />, { wrapper: createWrapper() })
 
@@ -62,19 +63,19 @@ describe('EditTaskData', () => {
   })
 
   it('debe llamar a getTaskById con los parámetros correctos', async () => {
-    const mockTask = {
+    const mockTask: Task = {
       _id: 'task123',
       name: 'Test Task',
       description: 'Test Description',
-      status: 'todo' as const,
+      status: 'pending',
       project: 'proj123',
-      assigned: null,
-      priority: 'medium' as const,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      completedBy: [],
+      notes: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
 
-    vi.mocked(getTaskById).mockResolvedValue(mockTask as any)
+    vi.mocked(getTaskById).mockResolvedValue(mockTask)
 
     render(<EditTaskData />, { wrapper: createWrapper() })
 

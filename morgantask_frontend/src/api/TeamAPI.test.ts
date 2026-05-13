@@ -16,7 +16,7 @@ describe('TeamAPI', () => {
 
   describe('findUserByEmail', () => {
     it('retorna usuario en éxito', async () => {
-      vi.mocked(api.post).mockResolvedValue({ data: { _id: 'u1', name: 'John', email: 'john@test.com', role: 'member' } } as any)
+      vi.mocked(api.post).mockResolvedValue({ data: { _id: 'u1', name: 'John', email: 'john@test.com', role: 'member' } })
       const result = await findUserByEmail({ projectId: 'proj123', formData: { email: 'john@test.com' } })
       expect(result?._id).toBe('u1')
     })
@@ -28,14 +28,14 @@ describe('TeamAPI', () => {
     })
 
     it('lanza error cuando axios response existe', async () => {
-      vi.mocked(api.post).mockRejectedValue(axiosErr('User not found') as any)
+      vi.mocked(api.post).mockRejectedValue(axiosErr('User not found'))
       await expect(findUserByEmail({ projectId: 'proj123', formData: { email: 'x@test.com' } })).rejects.toThrow('User not found')
     })
   })
 
   describe('addUserToProject', () => {
     it('retorna data en éxito', async () => {
-      vi.mocked(api.post).mockResolvedValue({ data: 'ok' } as any)
+      vi.mocked(api.post).mockResolvedValue({ data: 'ok' })
       const result = await addUserToProject({ projectId: 'proj123', id: 'u1' })
       expect(result).toBe('ok')
     })
@@ -47,14 +47,14 @@ describe('TeamAPI', () => {
     })
 
     it('lanza error cuando axios response existe', async () => {
-      vi.mocked(api.post).mockRejectedValue(axiosErr('User already in project') as any)
+      vi.mocked(api.post).mockRejectedValue(axiosErr('User already in project'))
       await expect(addUserToProject({ projectId: 'proj123', id: 'u1' })).rejects.toThrow('User already in project')
     })
   })
 
   describe('removeUserFromProject', () => {
     it('retorna data en éxito', async () => {
-      vi.mocked(api.delete).mockResolvedValue({ data: 'removed' } as any)
+      vi.mocked(api.delete).mockResolvedValue({ data: 'removed' })
       const result = await removeUserFromProject({ projectId: 'proj123', userId: 'u1' })
       expect(result).toBe('removed')
     })
@@ -66,20 +66,20 @@ describe('TeamAPI', () => {
     })
 
     it('lanza error cuando axios response existe', async () => {
-      vi.mocked(api.delete).mockRejectedValue(axiosErr('Cannot remove owner') as any)
+      vi.mocked(api.delete).mockRejectedValue(axiosErr('Cannot remove owner'))
       await expect(removeUserFromProject({ projectId: 'proj123', userId: 'u1' })).rejects.toThrow('Cannot remove owner')
     })
   })
 
   describe('getProjectTeam', () => {
     it('retorna equipo parseado', async () => {
-      vi.mocked(api).mockResolvedValue({ data: [{ _id: 'u1', name: 'A', email: 'a@test.com' }] } as any)
+      vi.mocked(api).mockResolvedValue({ data: [{ _id: 'u1', name: 'A', email: 'a@test.com' }] })
       const result = await getProjectTeam('proj123')
       expect(result).toHaveLength(1)
     })
 
     it('retorna undefined si schema falla', async () => {
-      vi.mocked(api).mockResolvedValue({ data: { bad: true } } as any)
+      vi.mocked(api).mockResolvedValue({ data: { bad: true } })
       const result = await getProjectTeam('proj123')
       expect(result).toBeUndefined()
     })
@@ -91,7 +91,7 @@ describe('TeamAPI', () => {
     })
 
     it('lanza error cuando axios response existe', async () => {
-      vi.mocked(api).mockRejectedValue(axiosErr('Project not found') as any)
+      vi.mocked(api).mockRejectedValue(axiosErr('Project not found'))
       await expect(getProjectTeam('proj123')).rejects.toThrow('Project not found')
     })
   })

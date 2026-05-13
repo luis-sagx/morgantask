@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import ProjectForm from './ProjectForm'
-import { ProjectFormData } from '@/types'
+import type { ProjectFormData, FieldErrors } from '@/types'
+import type { UseFormRegister } from 'react-hook-form'
 
-const TestWrapper = ({ children }: { children: (errors: any, register: any) => React.ReactNode }) => {
+const TestWrapper = ({ children }: { children: (errors: FieldErrors<ProjectFormData>, register: UseFormRegister<ProjectFormData>) => React.ReactNode }) => {
   const { register, formState: { errors } } = useForm<ProjectFormData>()
-  return <>{children(errors, register)}</>
+  return <>{children(errors as FieldErrors<ProjectFormData>, register)}</>
 }
 
 describe('ProjectForm', () => {
@@ -56,9 +57,9 @@ describe('ProjectForm', () => {
   })
 
   it('debe mostrar error cuando hay error en projectName', () => {
-    const errors = {
+    const errors: FieldErrors<ProjectFormData> = {
       projectName: { message: 'El Titulo del Proyecto es obligatorio', type: 'required' }
-    } as any
+    }
 
     render(
       <TestWrapper>
@@ -71,9 +72,9 @@ describe('ProjectForm', () => {
   })
 
   it('debe mostrar error cuando hay error en clientName', () => {
-    const errors = {
+    const errors: FieldErrors<ProjectFormData> = {
       clientName: { message: 'El Nombre del Cliente es obligatorio', type: 'required' }
-    } as any
+    }
 
     render(
       <TestWrapper>
@@ -86,9 +87,9 @@ describe('ProjectForm', () => {
   })
 
   it('debe mostrar error cuando hay error en description', () => {
-    const errors = {
+    const errors: FieldErrors<ProjectFormData> = {
       description: { message: 'Una descripción del proyecto es obligatoria', type: 'required' }
-    } as any
+    }
 
     render(
       <TestWrapper>

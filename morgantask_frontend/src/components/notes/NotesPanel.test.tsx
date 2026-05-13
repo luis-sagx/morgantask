@@ -3,12 +3,13 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import NotesPanel from './NotesPanel'
+import type { Note } from '@/types'
 
 vi.mock('./AddNoteForm', () => ({
   default: () => <div>AddNoteForm</div>
 }))
 vi.mock('./NoteDetail', () => ({
-  default: ({ note }: any) => <div>Note: {note._id}</div>
+  default: ({ note }: { note: Note }) => <div>Note: {note._id}</div>
 }))
 
 const createWrapper = () => {
@@ -42,21 +43,21 @@ describe('NotesPanel', () => {
   })
 
   it('debe renderizar las notas existentes', () => {
-    const mockNotes = [
+    const mockNotes: Note[] = [
       {
         _id: 'note1',
         content: 'Note 1',
         createdBy: { _id: 'user1', name: 'User 1', email: 'user1@test.com' },
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         task: 'task1'
       },
       {
         _id: 'note2',
         content: 'Note 2',
         createdBy: { _id: 'user2', name: 'User 2', email: 'user2@test.com' },
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         task: 'task1'
       }
     ]
@@ -68,13 +69,13 @@ describe('NotesPanel', () => {
   })
 
   it('debe renderizar una nota individual', () => {
-    const mockNotes = [
+    const mockNotes: Note[] = [
       {
         _id: 'note1',
         content: 'Single Note',
         createdBy: { _id: 'user1', name: 'User 1', email: 'user1@test.com' },
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         task: 'task1'
       }
     ]

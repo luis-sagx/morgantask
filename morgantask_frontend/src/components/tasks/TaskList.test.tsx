@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, it, vi } from 'vitest'
 import TaskList from './TaskList'
+import type { Task } from '@/types'
 
 vi.mock('@tanstack/react-query', () => ({
   useMutation: vi.fn(),
@@ -10,7 +11,7 @@ vi.mock('@tanstack/react-query', () => ({
 }))
 
 vi.mock('@dnd-kit/core', () => ({
-  DndContext: ({ children, onDragEnd }: any) => (
+  DndContext: ({ children, onDragEnd }: { children: React.ReactNode; onDragEnd: (result: { active: { id: string }; over: { id: string } }) => void }) => (
     <div>
       <button onClick={() => onDragEnd({ active: { id: 'task1' }, over: { id: 'completed' } })}>trigger-drag</button>
       {children}
@@ -19,30 +20,31 @@ vi.mock('@dnd-kit/core', () => ({
 }))
 
 vi.mock('./TaskCard', () => ({
-  default: ({ task }: any) => <li>{task.name}</li>
+  default: ({ task }: { task: Task }) => <li>{task.name}</li>
 }))
 
 vi.mock('./DropTask', () => ({
-  default: ({ status }: any) => <div>Drop {status}</div>
+  default: ({ status }: { status: string }) => <div>Drop {status}</div>
 }))
 
 describe('TaskList', () => {
   const mutate = vi.fn()
   const setQueryData = vi.fn()
+  const invalidateQueries = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
+    vi.mocked(useMutation).mockReturnValue({ mutate })
     vi.mocked(useQueryClient).mockReturnValue({
       setQueryData,
-      invalidateQueries: vi.fn()
-    } as any)
+      invalidateQueries
+    })
   })
 
-  const tasks = [
-    { _id: 'task1', name: 'Tarea 1', description: 'D', status: 'pending' },
-    { _id: 'task2', name: 'Tarea 2', description: 'D', status: 'completed' }
-  ] as any
+  const tasks: Task[] = [
+    { _id: 'task1', name: 'Tarea 1', description: 'D', status: 'pending', project: 'p1', completedBy: [], notes: [], createdAt: '', updatedAt: '' },
+    { _id: 'task2', name: 'Tarea 2', description: 'D', status: 'completed', project: 'p1', completedBy: [], notes: [], createdAt: '', updatedAt: '' }
+  ]
 
   it('renderiza columnas y tareas agrupadas', () => {
     render(

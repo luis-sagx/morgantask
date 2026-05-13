@@ -5,6 +5,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import DashboardView from './DashboardView'
+import type { User, Project } from '@/types'
 
 vi.mock('@/hooks/useAuth')
 vi.mock('@/api/ProjectAPI')
@@ -37,9 +38,8 @@ describe('DashboardView', () => {
     vi.mocked(useAuth).mockReturnValue({
       data: undefined,
       isLoading: true,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -48,12 +48,12 @@ describe('DashboardView', () => {
   })
 
   it('debe renderizar el título de Mis Proyectos', async () => {
+    const mockUser: User = { _id: 'user123', name: 'John', email: 'john@test.com' }
     vi.mocked(useAuth).mockReturnValue({
-      data: { _id: 'user123', name: 'John', email: 'john@test.com' },
+      data: mockUser,
       isLoading: false,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -65,12 +65,12 @@ describe('DashboardView', () => {
   })
 
   it('debe renderizar la descripción', async () => {
+    const mockUser: User = { _id: 'user123', name: 'John', email: 'john@test.com' }
     vi.mocked(useAuth).mockReturnValue({
-      data: { _id: 'user123', name: 'John', email: 'john@test.com' },
+      data: mockUser,
       isLoading: false,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -82,12 +82,12 @@ describe('DashboardView', () => {
   })
 
   it('debe renderizar el botón de nuevo proyecto', async () => {
+    const mockUser: User = { _id: 'user123', name: 'John', email: 'john@test.com' }
     vi.mocked(useAuth).mockReturnValue({
-      data: { _id: 'user123', name: 'John', email: 'john@test.com' },
+      data: mockUser,
       isLoading: false,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -99,12 +99,12 @@ describe('DashboardView', () => {
   })
 
   it('debe mostrar mensaje cuando no hay proyectos', async () => {
+    const mockUser: User = { _id: 'user123', name: 'John', email: 'john@test.com' }
     vi.mocked(useAuth).mockReturnValue({
-      data: { _id: 'user123', name: 'John', email: 'john@test.com' },
+      data: mockUser,
       isLoading: false,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -116,26 +116,26 @@ describe('DashboardView', () => {
   })
 
   it('debe renderizar lista de proyectos', async () => {
-    const mockUser = { _id: 'user123', name: 'John', email: 'john@test.com' }
-
+    const mockUser: User = { _id: 'user123', name: 'John', email: 'john@test.com' }
     vi.mocked(useAuth).mockReturnValue({
       data: mockUser,
       isLoading: false,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
-    const mockProjects = [
+    const mockProjects: Project[] = [
       {
         _id: 'proj1',
         projectName: 'Project 1',
         clientName: 'Client 1',
         description: 'Description 1',
-        manager: 'user123'
+        manager: 'user123',
+        tasks: [],
+        team: []
       }
     ]
 
-    vi.mocked(getProjects).mockResolvedValue(mockProjects as any)
+    vi.mocked(getProjects).mockResolvedValue(mockProjects)
 
     render(<DashboardView />, { wrapper: createWrapper() })
 
@@ -147,26 +147,26 @@ describe('DashboardView', () => {
   })
 
   it('debe mostrar rol de colaborador cuando el usuario no es manager', async () => {
-    const mockUser = { _id: 'user123', name: 'John', email: 'john@test.com' }
-
+    const mockUser: User = { _id: 'user123', name: 'John', email: 'john@test.com' }
     vi.mocked(useAuth).mockReturnValue({
       data: mockUser,
       isLoading: false,
-      isError: false,
-      error: null
-    } as any)
+      isError: false
+    })
 
-    const mockProjects = [
+    const mockProjects: Project[] = [
       {
         _id: 'proj1',
         projectName: 'Project 1',
         clientName: 'Client 1',
         description: 'Description 1',
-        manager: 'anotheruser'
+        manager: 'anotheruser',
+        tasks: [],
+        team: []
       }
     ]
 
-    vi.mocked(getProjects).mockResolvedValue(mockProjects as any)
+    vi.mocked(getProjects).mockResolvedValue(mockProjects)
 
     render(<DashboardView />, { wrapper: createWrapper() })
 

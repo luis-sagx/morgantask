@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, it, vi } from 'vitest'
 import ProjectTeamView from './ProjectTeamView'
+import type { TeamMember } from '@/types'
 
 vi.mock('@tanstack/react-query', () => ({
   useQuery: vi.fn(),
@@ -16,11 +17,12 @@ vi.mock('@/components/team/AddMemberModal', () => ({
 
 describe('ProjectTeamView', () => {
   const mutate = vi.fn()
+  const invalidateQueries = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
-    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries: vi.fn() } as any)
+    vi.mocked(useMutation).mockReturnValue({ mutate })
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries })
   })
 
   const renderView = () =>
@@ -33,23 +35,24 @@ describe('ProjectTeamView', () => {
     )
 
   it('muestra cargando', () => {
-    vi.mocked(useQuery).mockReturnValue({ isLoading: true, isError: false, data: undefined } as any)
+    vi.mocked(useQuery).mockReturnValue({ isLoading: true, isError: false, data: undefined })
     renderView()
     expect(screen.getByText('Cargando...')).toBeInTheDocument()
   })
 
   it('muestra estado vacío', () => {
-    vi.mocked(useQuery).mockReturnValue({ isLoading: false, isError: false, data: [] } as any)
+    vi.mocked(useQuery).mockReturnValue({ isLoading: false, isError: false, data: [] })
     renderView()
     expect(screen.getByText('No hay miembros en este equipo')).toBeInTheDocument()
   })
 
   it('renderiza miembros y permite eliminar', () => {
+    const mockTeam: TeamMember[] = [{ _id: 'u1', name: 'John', email: 'john@test.com' }]
     vi.mocked(useQuery).mockReturnValue({
       isLoading: false,
       isError: false,
-      data: [{ _id: 'u1', name: 'John', email: 'john@test.com' }]
-    } as any)
+      data: mockTeam
+    })
 
     renderView()
     expect(screen.getByText('Administrar Equipo')).toBeInTheDocument()

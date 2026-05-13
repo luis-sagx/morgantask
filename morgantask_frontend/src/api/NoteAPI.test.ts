@@ -45,7 +45,7 @@ describe('NoteAPI', () => {
       const taskId = 'task123'
       const formData = { content: 'Test note content' }
 
-      vi.mocked(api.post).mockRejectedValue(axiosErr('Note creation failed') as any)
+      vi.mocked(api.post).mockRejectedValue(axiosErr('Note creation failed'))
 
       await expect(createNote({ projectId, taskId, formData })).rejects.toThrow('Note creation failed')
     })
@@ -93,7 +93,7 @@ describe('NoteAPI', () => {
       const taskId = 'task123'
       const noteId = 'note123'
 
-      vi.mocked(api.delete).mockRejectedValue(axiosErr('Note not found') as any)
+      vi.mocked(api.delete).mockRejectedValue(axiosErr('Note not found'))
 
       await expect(deleteNote({ projectId, taskId, noteId })).rejects.toThrow('Note not found')
     })

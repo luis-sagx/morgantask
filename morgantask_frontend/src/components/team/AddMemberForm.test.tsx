@@ -4,10 +4,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import AddMemberForm from './AddMemberForm'
+import type { TeamMember } from '@/types'
 
 vi.mock('@/api/TeamAPI')
 vi.mock('./SearchResult', () => ({
-  default: ({ user }: any) => <div>SearchResult - {user.name}</div>
+  default: ({ user }: { user: TeamMember }) => <div>SearchResult - {user.name}</div>
 }))
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
@@ -74,12 +75,12 @@ describe('AddMemberForm', () => {
   })
 
   it('debe enviar el formulario con email válido', async () => {
-    vi.mocked(findUserByEmail).mockResolvedValue({
+    const mockUser: TeamMember = {
       _id: 'user123',
       name: 'John Doe',
-      email: 'john@test.com',
-      role: 'user'
-    } as any)
+      email: 'john@test.com'
+    }
+    vi.mocked(findUserByEmail).mockResolvedValue(mockUser)
 
     render(<AddMemberForm />, { wrapper: createWrapper() })
     const emailInput = screen.getByPlaceholderText('E-mail del usuario a Agregar')

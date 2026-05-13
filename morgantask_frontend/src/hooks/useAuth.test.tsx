@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAuth } from './useAuth'
 import { getUser } from '@/api/AuthAPI'
 import type { ReactNode } from 'react'
+import type { User } from '@/types'
 
 vi.mock('@/api/AuthAPI', () => ({
   getUser: vi.fn()
@@ -30,12 +31,12 @@ describe('useAuth', () => {
   })
 
   it('debe iniciar con isLoading en true y retornar datos cuando la carga es exitosa', async () => {
-    const mockUser = {
+    const mockUser: User = {
       _id: '123',
       name: 'Test User',
       email: 'test@test.com'
     }
-    vi.mocked(getUser).mockResolvedValue(mockUser as any)
+    vi.mocked(getUser).mockResolvedValue(mockUser)
 
     const { result } = renderHook(() => useAuth(), {
       wrapper: createWrapper()

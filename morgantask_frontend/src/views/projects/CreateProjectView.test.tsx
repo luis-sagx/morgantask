@@ -3,11 +3,13 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import CreateProjectView from './CreateProjectView'
+import type { UseFormRegister } from 'react-hook-form'
+import type { ProjectFormData } from '@/types'
 
 vi.mock('@/api/ProjectAPI')
 vi.mock('react-toastify')
 vi.mock('@/components/projects/ProjectForm', () => ({
-  default: ({ register, errors }: any) => (
+  default: ({ register }: { register: UseFormRegister<ProjectFormData> }) => (
     <div>
       <input {...register('projectName')} placeholder="Project Name" />
       <input {...register('clientName')} placeholder="Client Name" />

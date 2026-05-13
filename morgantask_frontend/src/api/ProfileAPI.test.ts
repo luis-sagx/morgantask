@@ -15,23 +15,23 @@ describe('ProfileAPI', () => {
   })
 
   it('updateProfile retorna data', async () => {
-    vi.mocked(api.put).mockResolvedValue({ data: 'updated' } as any)
+    vi.mocked(api.put).mockResolvedValue({ data: 'updated' })
     const result = await updateProfile({ name: 'John', email: 'john@test.com' })
     expect(result).toBe('updated')
   })
 
   it('updateProfile lanza error si axios response existe', async () => {
-    vi.mocked(api.put).mockRejectedValue(axiosErr('profile failed') as any)
+    vi.mocked(api.put).mockRejectedValue(axiosErr('profile failed'))
     await expect(updateProfile({ name: 'John', email: 'john@test.com' })).rejects.toThrow('profile failed')
   })
 
 
   it('changePassword lanza error si axios response existe', async () => {
-    vi.mocked(api.post).mockRejectedValue(axiosErr('change failed') as any)
+    vi.mocked(api.post).mockRejectedValue(axiosErr('change failed'))
     await expect(changePassword({ current_password: 'old', password: '12345678', password_confirmation: '12345678' })).rejects.toThrow('change failed')
   })
   it('changePassword retorna data', async () => {
-    vi.mocked(api.post).mockResolvedValue({ data: 'changed' } as any)
+    vi.mocked(api.post).mockResolvedValue({ data: 'changed' })
     const result = await changePassword({ current_password: 'old', password: '12345678', password_confirmation: '12345678' })
     expect(result).toBe('changed')
   })

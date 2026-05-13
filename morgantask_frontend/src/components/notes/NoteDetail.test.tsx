@@ -45,7 +45,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    } as any)
+    })
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('Test note content')).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    } as any)
+    })
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('por: John Doe')).toBeInTheDocument()
@@ -69,7 +69,7 @@ describe('NoteDetail', () => {
       isLoading: true,
       isError: false,
       error: null
-    } as any)
+    })
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('Cargando...')).toBeInTheDocument()
@@ -81,7 +81,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    } as any)
+    })
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('Eliminar')).toBeInTheDocument()
@@ -93,7 +93,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    } as any)
+    })
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.queryByText('Eliminar')).not.toBeInTheDocument()
@@ -105,7 +105,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    } as any)
+    })
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     const deleteButton = screen.getByText('Eliminar')

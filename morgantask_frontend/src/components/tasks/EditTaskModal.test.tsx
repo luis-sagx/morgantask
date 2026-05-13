@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, it, vi } from 'vitest'
 import EditTaskModal from './EditTaskModal'
+import type { Task } from '@/types'
 
 vi.mock('@tanstack/react-query', () => ({
   useMutation: vi.fn(),
@@ -13,7 +14,7 @@ describe('EditTaskModal', () => {
   const mutate = vi.fn()
   const invalidateQueries = vi.fn()
 
-  const task = {
+  const task: Task = {
     _id: 'task1',
     name: 'Task inicial',
     description: 'Desc inicial',
@@ -23,12 +24,12 @@ describe('EditTaskModal', () => {
     notes: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
-  } as any
+  }
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries } as any)
-    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries })
+    vi.mocked(useMutation).mockReturnValue({ mutate })
   })
 
   it('renderiza datos iniciales', () => {
