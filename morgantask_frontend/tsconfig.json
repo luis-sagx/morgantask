@@ -5,6 +5,8 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "types": ["vitest/globals"],
+    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
     "paths" : {
       "@/components/*" : ["components/*"],
@@ -15,7 +17,7 @@
       "@/lib/*" : ["lib/*"],
       "@/utils/*" : ["utils/*"],
       "@/locales/*" : ["locales/*"],
-      "@/hooks/*" : ["hooks/*"],
+      "@/hooks/*" : ["hooks/*"]
     },
 
     /* Bundler mode */
