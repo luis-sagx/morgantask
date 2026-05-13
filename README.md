@@ -356,8 +356,8 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 ```
+![ primeras líneas del archivo `ProjectUseCases.test.ts](screenshots_test/captura2.png)
 
-> 📸 **[FIGURA 2 — Insertar aquí: foto de estas primeras líneas del archivo `ProjectUseCases.test.ts`]**
 > *Descripción: Se muestra la declaración del objeto `projectRepositoryMock` con todos sus métodos asignados a `jest.fn()`, y el bloque `beforeEach` que limpia los contadores.*
 
 ---
@@ -467,7 +467,10 @@ test("Caso 4: Debe permitir el acceso si el usuario es el manager del proyecto",
 - Cuando el ID del usuario coincide exactamente con el `manager` del proyecto, el sistema autoriza la lectura y retorna el objeto completo sin restricciones.
 - Complementa al Caso 3: juntos prueban **ambas ramas** del condicional de autorización, logrando el 100% de Branch Coverage en esta lógica.
 
-> 📸 **[FIGURA 3 — Insertar aquí: foto de la terminal mostrando los 4 checks verdes de ProjectUseCases.test.ts]**
+
+![ 4 checks verdes de ProjectUseCases.test.ts](screenshots_test/captura3.png)
+
+
 > *Descripción: Terminal con `✓ Caso 1`, `✓ Caso 2`, `✓ Caso 3`, `✓ Caso 4` en verde bajo la línea `PASS src/__tests__/ProjectUseCases.test.ts`.*
 
 ---
@@ -522,8 +525,8 @@ const projectRepositoryMock: jest.Mocked<IProjectRepository> = {
   addMember: jest.fn(), removeMember: jest.fn(), getTeamPopulated: jest.fn(),
 };
 ```
+![ primeras líneas del archivo `TaskUseCases.test.ts](screenshots_test/captura4.png)
 
-> 📸 **[FIGURA 4 — Insertar aquí: foto de las primeras líneas del archivo `TaskUseCases.test.ts`]**
 > *Descripción: Se observan los dos mocks declarados (`taskRepositoryMock` y `projectRepositoryMock`) y cómo ambos se inyectan juntos en `new TaskUseCases(taskRepositoryMock, projectRepositoryMock)`.*
 
 ---
@@ -592,8 +595,9 @@ test("Caso 2: Al eliminar una tarea, debe desvincularse del proyecto", async () 
 - Se verifica que al borrar la tarea (`delete`), el sistema ejecuta **en la misma operación** el método `removeTask` sobre el proyecto padre.
 - Esto previene el problema de **"datos huérfanos"**: identificadores de tareas que ya no existen permaneciendo en el arreglo `tasks[]` del proyecto en MongoDB.
 - Ambas aserciones juntas prueban que la eliminación es **atómica a nivel de lógica de negocio**.
+- 
+![ terminal mostrando los 2 checks verdes de TaskUseCases.test.ts](screenshots_test/captura5.png)
 
-> 📸 **[FIGURA 5 — Insertar aquí: foto de la terminal mostrando los 2 checks verdes de TaskUseCases.test.ts]**
 > *Descripción: Terminal con `✓ Caso 1` y `✓ Caso 2` en verde bajo la línea `PASS src/__tests__/TaskUseCases.test.ts`.*
 
 ---
@@ -616,6 +620,9 @@ docker compose exec backend sh -c "pnpm test -- --coverage"
 | **% Lines** | Porcentaje de líneas ejecutadas | 75% |
 
 > El **100% de Branch Coverage** en `ProjectUseCases.ts` es el indicador más importante: significa que **cada decisión lógica del código** (¿existe el proyecto? ¿el usuario tiene permiso?) fue evaluada tanto cuando la condición es verdadera como cuando es falsa. No existe ningún camino lógico sin probar.
+
+
+![ tabla de cobertura en la terminal](screenshots_test/captura6.png)
 
 > 📸 **[FIGURA 6 — Insertar aquí: foto completa de la tabla de cobertura en la terminal]**
 > *Descripción: Tabla con columnas File / % Stmts / % Branch / % Funcs / % Lines. Se resaltan las filas de `ProjectUseCases.ts` con 100% en Branch y las filas de `infrastructure/security` con 100% en todas las columnas.*
