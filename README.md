@@ -301,8 +301,8 @@ Snapshots:   0 total
 Time:        1.344 s
 ```
 
-![Prueba LoginView](screenshots_test/frontend-login-test.png)
-> 📸 **![FIGURA 1 — (screenshots_test/frontend-login-test.png) Insertar aquí: captura completa de la terminal con los PASS y la tabla de cobertura]**
+![Terminal con los PASS y la tabla de cobertura](screenshots_test/captura1.png)
+
 > *Descripción: Resultado de ejecutar `docker compose exec backend sh -c "pnpm test -- --coverage"`. Se observan las 4 suites en verde y los 10 tests aprobados.*
 
 **Comando de ejecución (entorno Dockerizado):**
