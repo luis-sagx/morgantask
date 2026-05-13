@@ -12,6 +12,7 @@ App full-stack para gestion de proyectos, tareas, notas y equipos.
 
 - Node.js 20+
 - npm
+- pnpm
 - MongoDB local o via Docker Compose
 
 ## Instalacion local
@@ -21,7 +22,7 @@ cd morgantask_backend
 npm install
 
 cd ../morgantask_frontend
-npm install
+pnpm install
 ```
 
 ## Variables de entorno
@@ -53,7 +54,7 @@ npm run dev
 
 # en otra terminal
 cd morgantask_frontend
-npm run dev
+pnpm run dev
 ```
 
 - Backend: http://localhost:4000

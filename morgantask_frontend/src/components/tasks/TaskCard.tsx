@@ -15,7 +15,7 @@ type TaskCardProps = {
 
 export default function TaskCard({ task, canEdit }: TaskCardProps) {
 
-    const { attributes, listeners, setNodeRef, transform  } = useDraggable({
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: task._id
     })
     const navigate = useNavigate()

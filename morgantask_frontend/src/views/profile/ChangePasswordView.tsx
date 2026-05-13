@@ -26,7 +26,7 @@ export default function ChangePasswordView() {
   return (
     <>
       <div className="max-w-3xl mx-auto">
-
+        
         <h1 className="text-3xl font-bold">Cambiar Contraseña</h1>
 
         <form
