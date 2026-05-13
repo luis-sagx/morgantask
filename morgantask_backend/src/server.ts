@@ -2,10 +2,10 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import morgan from 'morgan'
-import { corsConfig } from './config/cors'
-import { connectDB } from './config/db'
-import authRoutes from './routes/authRoutes'
-import projectRoutes from './routes/projectRoutes'
+import { corsConfig } from './infrastructure/config/cors'
+import { connectDB } from './infrastructure/config/db'
+import authRoutes from './interfaces/routes/authRoutes'
+import projectRoutes from './interfaces/routes/projectRoutes'
 
 dotenv.config()
 connectDB()

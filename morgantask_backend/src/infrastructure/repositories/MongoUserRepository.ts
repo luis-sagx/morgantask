@@ -1,0 +1,52 @@
+import { IUser } from '../../domain/entities/User'
+import { IUserRepository } from '../../domain/ports/IUserRepository'
+import UserModel, { IUserDoc } from '../models/UserModel'
+
+export class MongoUserRepository implements IUserRepository {
+    private toEntity(doc: IUserDoc): IUser {
+        return {
+            _id: doc.id.toString(),
+            email: doc.email,
+            password: doc.password,
+            name: doc.name,
+            confirmed: doc.confirmed
+        }
+    }
+
+    async create(data: Omit<IUser, '_id'>): Promise<IUser> {
+        const user = new UserModel(data)
+        await user.save()
+        return this.toEntity(user)
+    }
+
+    async findByEmail(email: string): Promise<IUser | null> {
+        const user = await UserModel.findOne({ email })
+        return user ? this.toEntity(user) : null
+    }
+
+    async findById(id: string): Promise<IUser | null> {
+        const user = await UserModel.findById(id)
+        return user ? this.toEntity(user) : null
+    }
+
+    async findByIdPublic(id: string): Promise<Omit<IUser, 'password'> | null> {
+        const user = await UserModel.findById(id).select('_id name email confirmed')
+        if (!user) return null
+        return {
+            _id: user.id.toString(),
+            email: user.email,
+            name: user.name,
+            confirmed: user.confirmed
+        }
+    }
+
+    async findByEmailPublic(email: string): Promise<{ _id: string; email: string; name: string } | null> {
+        const user = await UserModel.findOne({ email }).select('_id email name')
+        if (!user) return null
+        return { _id: user.id.toString(), email: user.email, name: user.name }
+    }
+
+    async update(id: string, data: Partial<Omit<IUser, '_id'>>): Promise<void> {
+        await UserModel.findByIdAndUpdate(id, data)
+    }
+}
