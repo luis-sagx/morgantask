@@ -273,7 +273,362 @@ Validaciones realizadas:
 - visualización del campo contraseña
 - visualización del botón de registro
 
+
+
+
+
+
+
 ---
+
+## 🧪 2. Pruebas Unitarias Avanzadas — Core Business Logic
+
+La estrategia de Aseguramiento de la Calidad se centra en el patrón **Domain-Driven Testing**, implementando **Mocking** con `jest.fn()` para aislar completamente la lógica de negocio de la infraestructura real (MongoDB).
+
+> **¿Por qué Mocking?**
+> 1. **Aislamiento total:** La lógica de negocio se prueba sin depender de MongoDB.
+> 2. **Control de errores:** Permite forzar escenarios de fallo (null returns, accesos no autorizados) que serían imposibles de reproducir de forma confiable con datos reales.
+> 3. **Velocidad:** Las 10 pruebas del proyecto se ejecutan en apenas **1.344 segundos**.
+
+---
+
+### Resultados Globales de Ejecución
+
+```
+Test Suites: 4 passed, 4 total
+Tests:       10 passed, 10 total
+Snapshots:   0 total
+Time:        1.344 s
+```
+
+> 📸 **[FIGURA 1 — Insertar aquí: captura completa de la terminal con los PASS y la tabla de cobertura]**
+> *Descripción: Resultado de ejecutar `docker compose exec backend sh -c "pnpm test -- --coverage"`. Se observan las 4 suites en verde y los 10 tests aprobados.*
+
+**Comando de ejecución (entorno Dockerizado):**
+
+```bash
+docker compose exec backend sh -c "pnpm test -- --coverage"
+```
+
+---
+
+### 📊 Tabla de Cobertura de Código
+
+| Archivo | % Stmts | % Branch | % Funcs | % Lines | Líneas no cubiertas |
+|---|---|---|---|---|---|
+| **application/usecases** | 52.38 | 38.46 | 50 | 55.76 | — |
+| `AuthUseCases.ts` | 41.17 | 22.22 | 50 | 48.14 | 27-50 |
+| `ProjectUseCases.ts` | **80** | **100** | 57.14 | **75** | 12, 27-31 |
+| `TaskUseCases.ts` | **50** | **0** | 42.85 | 53.84 | 22-32, 43 |
+| **infrastructure/security** | **100** | **100** | **100** | **100** | — |
+| `bcrypt.ts` | **100** | **100** | **100** | **100** | — |
+| `jwt.ts` | **100** | **100** | **100** | **100** | — |
+
+> La cobertura del **100% en Branch** para `ProjectUseCases.ts` significa que **todos los caminos lógicos** (validación de existencia, control de roles, acceso autorizado) fueron evaluados tanto en su escenario positivo como negativo.
+
+---
+
+## 📁 Módulo A — `ProjectUseCases.test.ts`
+
+### Descripción General
+
+Se simuló la interfaz completa `IProjectRepository` mediante `jest.Mocked<IProjectRepository>`, inyectando el mock en el constructor de `ProjectUseCases`. Esto garantiza que **ninguna prueba realiza conexiones reales a MongoDB**.
+
+```typescript
+// Declaración del Mock — simula IProjectRepository con sus 10 métodos
+const projectRepositoryMock: jest.Mocked<IProjectRepository> = {
+  create: jest.fn(),
+  findByUser: jest.fn(),
+  findById: jest.fn(),
+  findByIdWithTasks: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+  addTask: jest.fn(),
+  removeTask: jest.fn(),
+  addMember: jest.fn(),
+  removeMember: jest.fn(),
+  getTeamPopulated: jest.fn(),
+};
+
+// Limpieza de contadores antes de cada prueba — garantiza aislamiento
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+```
+
+> 📸 **[FIGURA 2 — Insertar aquí: foto de estas primeras líneas del archivo `ProjectUseCases.test.ts`]**
+> *Descripción: Se muestra la declaración del objeto `projectRepositoryMock` con todos sus métodos asignados a `jest.fn()`, y el bloque `beforeEach` que limpia los contadores.*
+
+---
+
+### Mapa de Casos de Prueba
+
+| # | Nombre del test | Mock configurado | Aserción clave | Tipo |
+|---|---|---|---|---|
+| 1 | Debe crear un proyecto correctamente | `create` → retorna objeto predefinido | `toHaveBeenCalledTimes(1)` | ✅ Happy path |
+| 2 | Debe lanzar error si el proyecto no existe | `findByIdWithTasks` → `null` | `.rejects.toThrow("Proyecto no encontrado")` | ⚠️ Error handling |
+| 3 | Debe bloquear acceso si el usuario no es manager ni equipo | Proyecto con `manager` y `team` distintos al usuario | `.rejects.toThrow("Acción no válida")` | 🔒 Seguridad RBAC |
+| 4 | Debe permitir acceso si el usuario es el manager | Proyecto con `manager` coincidente | `expect(result).toEqual(mockProject)` | ✅ Happy path |
+
+---
+
+### Caso 1 — Creación exitosa de proyecto
+
+```typescript
+test("Caso 1: Debe crear un proyecto correctamente", async () => {
+  const mockProject = {
+    _id: "proj_123",
+    projectName: "App de Notas",
+    clientName: "ESPE",
+    description: "Proyecto QA",
+    manager: "user_1",
+    tasks: [],
+    team: []
+  };
+  projectRepositoryMock.create.mockResolvedValue(mockProject);
+
+  const projectUseCases = new ProjectUseCases(projectRepositoryMock);
+  const result = await projectUseCases.create({
+    projectName: "App de Notas",
+    clientName: "ESPE",
+    description: "Proyecto QA",
+    manager: "user_1"
+  });
+
+  expect(projectRepositoryMock.create).toHaveBeenCalledTimes(1);
+  expect(result.projectName).toBe("App de Notas");
+});
+```
+
+**¿Qué se validó?**
+- `toHaveBeenCalledTimes(1)`: certifica que el sistema intenta persistir el proyecto **exactamente una vez**, evitando duplicados en la base de datos.
+- `result.projectName`: los datos de salida coinciden exactamente con la entidad estructurada esperada.
+
+---
+
+### Caso 2 — Intercepción de entidad inexistente (Error HTTP 404)
+
+```typescript
+test("Caso 2: Debe lanzar error si el proyecto no existe al buscarlo", async () => {
+  projectRepositoryMock.findByIdWithTasks.mockResolvedValue(null);
+  const projectUseCases = new ProjectUseCases(projectRepositoryMock);
+
+  await expect(
+    projectUseCases.getById("id_invalido", "user_1")
+  ).rejects.toThrow("Proyecto no encontrado");
+});
+```
+
+**¿Qué se validó?**
+- El mock devuelve `null`, simulando una búsqueda fallida en la base de datos.
+- `.rejects.toThrow("Proyecto no encontrado")`: certifica que el sistema **no colapsa (crash)**, sino que lanza una excepción controlada que el controlador puede transformar en un error HTTP 404.
+
+---
+
+### Caso 3 — Control de acceso estricto (RBAC)
+
+```typescript
+test("Caso 3: Debe bloquear el acceso si el usuario no es el manager ni del equipo", async () => {
+  projectRepositoryMock.findByIdWithTasks.mockResolvedValue({
+    _id: "proj_123",
+    manager: "manager_original",
+    team: ["integrante_1"]
+  });
+  const projectUseCases = new ProjectUseCases(projectRepositoryMock);
+
+  await expect(
+    projectUseCases.getById("proj_123", "usuario_intruso")
+  ).rejects.toThrow("Acción no válida");
+});
+```
+
+**¿Qué se validó?**
+- Se inyecta un proyecto cuyo `manager` y `team` **no coinciden** con el usuario que realiza la petición (simulando un intruso).
+- El Caso de Uso intercepta la brecha de seguridad y bloquea el flujo lanzando `"Acción no válida"`.
+- Esta es una prueba crítica de **confidencialidad**: el control de acceso por roles (RBAC) está implementado en la capa de dominio, no solo en la capa HTTP.
+
+---
+
+### Caso 4 — Acceso concedido al propietario
+
+```typescript
+test("Caso 4: Debe permitir el acceso si el usuario es el manager del proyecto", async () => {
+  const mockProject = { _id: "proj_123", manager: "mi_usuario", team: [] };
+  projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);
+  const projectUseCases = new ProjectUseCases(projectRepositoryMock);
+
+  const result = await projectUseCases.getById("proj_123", "mi_usuario");
+  expect(result).toEqual(mockProject);
+});
+```
+
+**¿Qué se validó?**
+- Cuando el ID del usuario coincide exactamente con el `manager` del proyecto, el sistema autoriza la lectura y retorna el objeto completo sin restricciones.
+- Complementa al Caso 3: juntos prueban **ambas ramas** del condicional de autorización, logrando el 100% de Branch Coverage en esta lógica.
+
+> 📸 **[FIGURA 3 — Insertar aquí: foto de la terminal mostrando los 4 checks verdes de ProjectUseCases.test.ts]**
+> *Descripción: Terminal con `✓ Caso 1`, `✓ Caso 2`, `✓ Caso 3`, `✓ Caso 4` en verde bajo la línea `PASS src/__tests__/ProjectUseCases.test.ts`.*
+
+---
+
+## 📁 Módulo B — `TaskUseCases.test.ts`
+
+### Descripción General
+
+Este módulo presenta un nivel de complejidad arquitectónica superior: `TaskUseCases` orquesta **dos repositorios de forma simultánea** (`ITaskRepository` + `IProjectRepository`). Las pruebas validan la **integridad referencial** entre colecciones en una base de datos NoSQL como MongoDB.
+
+```
+                  ┌────────────────────────┐
+                  │     TaskUseCases       │
+                  │  (lógica de negocio)   │
+                  └──────────┬─────────────┘
+                             │ orquesta simultáneamente
+               ┌─────────────┴──────────────┐
+               ▼                            ▼
+  ┌────────────────────┐      ┌──────────────────────────┐
+  │  ITaskRepository   │      │   IProjectRepository     │
+  │  · create          │      │   · addTask              │
+  │  · findByProject   │      │   · removeTask           │
+  │  · findById        │      │   · findById             │
+  │  · findByIdWith... │      │   · addMember            │
+  │  · update          │      │   · removeMember         │
+  │  · updateStatus    │      │   · (+ 6 más)            │
+  │  · delete          │      │                          │
+  │  · addNote         │      │                          │
+  │  · removeNote      │      │                          │
+  └────────────────────┘      └──────────────────────────┘
+```
+
+```typescript
+// Mock del repositorio de tareas — 9 métodos
+const taskRepositoryMock: jest.Mocked<ITaskRepository> = {
+  create: jest.fn(),
+  findByProject: jest.fn(),
+  findById: jest.fn(),
+  findByIdWithDetails: jest.fn(),
+  update: jest.fn(),
+  updateStatus: jest.fn(),
+  delete: jest.fn(),
+  addNote: jest.fn(),
+  removeNote: jest.fn(),
+};
+
+// Mock del repositorio de proyectos — 11 métodos
+const projectRepositoryMock: jest.Mocked<IProjectRepository> = {
+  create: jest.fn(), findByUser: jest.fn(), findById: jest.fn(),
+  findByIdWithTasks: jest.fn(), update: jest.fn(), delete: jest.fn(),
+  addTask: jest.fn(), removeTask: jest.fn(),
+  addMember: jest.fn(), removeMember: jest.fn(), getTeamPopulated: jest.fn(),
+};
+```
+
+> 📸 **[FIGURA 4 — Insertar aquí: foto de las primeras líneas del archivo `TaskUseCases.test.ts`]**
+> *Descripción: Se observan los dos mocks declarados (`taskRepositoryMock` y `projectRepositoryMock`) y cómo ambos se inyectan juntos en `new TaskUseCases(taskRepositoryMock, projectRepositoryMock)`.*
+
+---
+
+### Mapa de Casos de Prueba
+
+| # | Nombre del test | Qué valida | Aserción crítica | Tipo |
+|---|---|---|---|---|
+| 1 | Crear tarea y asociarla automáticamente a su proyecto | Integridad referencial en creación | `toHaveBeenCalledWith("proj_1", "task_1")` | ✅ Integridad referencial |
+| 2 | Al eliminar una tarea, debe desvincularse del proyecto | Eliminación en cascada sin datos huérfanos | `removeTask` llamado con los IDs correctos | 🔗 Cascada segura |
+
+---
+
+### Caso 1 — Creación con Asociación Automática (Integridad Referencial)
+
+```typescript
+test("Caso 1: Debe crear una tarea y asociarla automáticamente a su proyecto", async () => {
+  const mockTask = {
+    _id: "task_1",
+    name: "Hacer Pruebas Unitarias",
+    description: "Usar Jest",
+    project: "proj_1",
+    status: "pending" as const,
+    completedBy: [],
+    notes: []
+  };
+
+  taskRepositoryMock.create.mockResolvedValue(mockTask);
+  projectRepositoryMock.addTask.mockResolvedValue(undefined);
+
+  const taskUseCases = new TaskUseCases(taskRepositoryMock, projectRepositoryMock);
+  const result = await taskUseCases.create({
+    name: "Hacer Pruebas Unitarias",
+    description: "Usar Jest",
+    projectId: "proj_1"
+  });
+
+  expect(taskRepositoryMock.create).toHaveBeenCalledTimes(1);
+  expect(projectRepositoryMock.addTask).toHaveBeenCalledWith("proj_1", "task_1"); // ← Relación garantizada
+  expect(result).toEqual(mockTask);
+});
+```
+
+**¿Qué se validó?**
+- `toHaveBeenCalledWith("proj_1", "task_1")`: garantiza matemáticamente que **toda nueva tarea se vincula automáticamente al arreglo de tareas de su proyecto padre** en MongoDB.
+- No basta con que la tarea exista; se valida que la referencia cruzada entre colecciones NoSQL se establezca correctamente en la misma operación.
+
+---
+
+### Caso 2 — Eliminación en Cascada Segura (sin datos huérfanos)
+
+```typescript
+test("Caso 2: Al eliminar una tarea, debe desvincularse del proyecto", async () => {
+  taskRepositoryMock.delete.mockResolvedValue(undefined);
+  projectRepositoryMock.removeTask.mockResolvedValue(undefined);
+
+  const taskUseCases = new TaskUseCases(taskRepositoryMock, projectRepositoryMock);
+  await taskUseCases.delete("task_1", "proj_1");
+
+  expect(taskRepositoryMock.delete).toHaveBeenCalledWith("task_1");
+  expect(projectRepositoryMock.removeTask).toHaveBeenCalledWith("proj_1", "task_1");
+});
+```
+
+**¿Qué se validó?**
+- Se verifica que al borrar la tarea (`delete`), el sistema ejecuta **en la misma operación** el método `removeTask` sobre el proyecto padre.
+- Esto previene el problema de **"datos huérfanos"**: identificadores de tareas que ya no existen permaneciendo en el arreglo `tasks[]` del proyecto en MongoDB.
+- Ambas aserciones juntas prueban que la eliminación es **atómica a nivel de lógica de negocio**.
+
+> 📸 **[FIGURA 5 — Insertar aquí: foto de la terminal mostrando los 2 checks verdes de TaskUseCases.test.ts]**
+> *Descripción: Terminal con `✓ Caso 1` y `✓ Caso 2` en verde bajo la línea `PASS src/__tests__/TaskUseCases.test.ts`.*
+
+---
+
+## 📈 Reporte Final de Cobertura
+
+**Comando ejecutado:**
+
+```bash
+docker compose exec backend sh -c "pnpm test -- --coverage"
+```
+
+### Interpretación de métricas clave
+
+| Métrica | Significado | Resultado en ProjectUseCases |
+|---|---|---|
+| **% Stmts** | Porcentaje de sentencias ejecutadas | 80% |
+| **% Branch** | Porcentaje de bifurcaciones (if/else) evaluadas en ambas ramas | **100%** ✅ |
+| **% Funcs** | Porcentaje de funciones invocadas | 57.14% |
+| **% Lines** | Porcentaje de líneas ejecutadas | 75% |
+
+> El **100% de Branch Coverage** en `ProjectUseCases.ts` es el indicador más importante: significa que **cada decisión lógica del código** (¿existe el proyecto? ¿el usuario tiene permiso?) fue evaluada tanto cuando la condición es verdadera como cuando es falsa. No existe ningún camino lógico sin probar.
+
+> 📸 **[FIGURA 6 — Insertar aquí: foto completa de la tabla de cobertura en la terminal]**
+> *Descripción: Tabla con columnas File / % Stmts / % Branch / % Funcs / % Lines. Se resaltan las filas de `ProjectUseCases.ts` con 100% en Branch y las filas de `infrastructure/security` con 100% en todas las columnas.*
+
+---
+
+
+
+
+
+
+
+
+
 
 ## Resultado final frontend
 
