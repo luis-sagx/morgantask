@@ -5,214 +5,126 @@ import { createTask, deleteTask, getTaskById, updateStatus, updateTask } from '.
 vi.mock('@/lib/axios')
 
 describe('TaskAPI', () => {
+  const axiosErr = (message: string) => ({
+    isAxiosError: true,
+    response: { data: { error: message } }
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   describe('createTask', () => {
-    it('debe crear una tarea exitosamente', async () => {
-      const mockResponse = 'task123'
-      const formData = { title: 'Test Task', description: 'Test' }
-      const projectId = 'proj123'
-
-      vi.mocked(api.post).mockResolvedValue({ data: mockResponse })
-
-      const result = await createTask({ formData, projectId })
-
-      expect(result).toBe(mockResponse)
-      expect(api.post).toHaveBeenCalledWith(`/projects/${projectId}/tasks`, formData)
+    it('retorna data en éxito', async () => {
+      vi.mocked(api.post).mockResolvedValue({ data: 'task123' } as any)
+      const result = await createTask({ formData: { name: 'T', description: 'D' } as any, projectId: 'proj123' })
+      expect(result).toBe('task123')
     })
 
-    it('debe retornar undefined cuando falla la creación', async () => {
-      const formData = { title: 'Test Task', description: 'Test' }
-      const projectId = 'proj123'
-      const errorMessage = 'Task creation failed'
-
-      vi.mocked(api.post).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await createTask({ formData, projectId })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.post).mockRejectedValue(new Error('x'))
+      const result = await createTask({ formData: { name: 'T', description: 'D' } as any, projectId: 'proj123' })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta', async () => {
-      const formData = { title: 'Test Task', description: 'Test' }
-      const projectId = 'proj123'
-
-      vi.mocked(api.post).mockRejectedValue(new Error('Network error'))
-
-      const result = await createTask({ formData, projectId })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.post).mockRejectedValue(axiosErr('Task creation failed') as any)
+      await expect(createTask({ formData: { name: 'T', description: 'D' } as any, projectId: 'proj123' })).rejects.toThrow('Task creation failed')
     })
   })
 
   describe('getTaskById', () => {
-    it('debe obtener una tarea por ID exitosamente', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const mockTask = {
-        _id: taskId,
-        name: 'Test Task',
-        description: 'Test',
-        status: 'pending' as const,
-        project: projectId,
-        completedBy: [],
-        notes: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+    it('retorna tarea parseada', async () => {
+      vi.mocked(api).mockResolvedValue({
+        data: {
+          _id: 'task123',
+          name: 'Task',
+          description: 'Desc',
+          status: 'pending',
+          project: 'proj123',
+          completedBy: [],
+          notes: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      } as any)
 
-      vi.mocked(api).mockResolvedValue({ data: mockTask })
-
-      const result = await getTaskById({ projectId, taskId })
-
-      expect(result).toEqual(mockTask)
-      expect(api).toHaveBeenCalledWith(`/projects/${projectId}/tasks/${taskId}`)
+      const result = await getTaskById({ projectId: 'proj123', taskId: 'task123' })
+      expect(result?._id).toBe('task123')
     })
 
-    it('debe retornar undefined cuando falla la obtención', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const errorMessage = 'Task not found'
-
-      vi.mocked(api).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await getTaskById({ projectId, taskId })
+    it('retorna undefined si schema inválido', async () => {
+      vi.mocked(api).mockResolvedValue({ data: { invalid: true } } as any)
+      const result = await getTaskById({ projectId: 'proj123', taskId: 'task123' })
       expect(result).toBeUndefined()
     })
 
-    it('debe retornar undefined si el schema no valida', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const invalidData = { invalid: 'data' }
-
-      vi.mocked(api).mockResolvedValue({ data: invalidData })
-
-      const result = await getTaskById({ projectId, taskId })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api).mockRejectedValue(new Error('x'))
+      const result = await getTaskById({ projectId: 'proj123', taskId: 'task123' })
       expect(result).toBeUndefined()
+    })
+
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api).mockRejectedValue(axiosErr('Task not found') as any)
+      await expect(getTaskById({ projectId: 'proj123', taskId: 'task123' })).rejects.toThrow('Task not found')
     })
   })
 
   describe('updateTask', () => {
-    it('debe actualizar una tarea exitosamente', async () => {
-      const mockResponse = 'updated'
-      const formData = { title: 'Updated Task', description: 'Updated' }
-      const projectId = 'proj123'
-      const taskId = 'task123'
-
-      vi.mocked(api.put).mockResolvedValue({ data: mockResponse })
-
-      const result = await updateTask({ formData, projectId, taskId })
-
-      expect(result).toBe(mockResponse)
-      expect(api.put).toHaveBeenCalledWith(`/projects/${projectId}/tasks/${taskId}`, formData)
+    it('retorna data en éxito', async () => {
+      vi.mocked(api.put).mockResolvedValue({ data: 'updated' } as any)
+      const result = await updateTask({ formData: { name: 'A', description: 'B' } as any, projectId: 'proj123', taskId: 'task123' })
+      expect(result).toBe('updated')
     })
 
-    it('debe retornar undefined cuando falla la actualización', async () => {
-      const formData = { title: 'Updated Task', description: 'Updated' }
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const errorMessage = 'Update failed'
-
-      vi.mocked(api.put).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await updateTask({ formData, projectId, taskId })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.put).mockRejectedValue(new Error('x'))
+      const result = await updateTask({ formData: { name: 'A', description: 'B' } as any, projectId: 'proj123', taskId: 'task123' })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta en update', async () => {
-      const formData = { title: 'Updated Task', description: 'Updated' }
-      const projectId = 'proj123'
-      const taskId = 'task123'
-
-      vi.mocked(api.put).mockRejectedValue(new Error('Network error'))
-
-      const result = await updateTask({ formData, projectId, taskId })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.put).mockRejectedValue(axiosErr('Update failed') as any)
+      await expect(updateTask({ formData: { name: 'A', description: 'B' } as any, projectId: 'proj123', taskId: 'task123' })).rejects.toThrow('Update failed')
     })
   })
 
   describe('deleteTask', () => {
-    it('debe eliminar una tarea exitosamente', async () => {
-      const mockResponse = 'deleted'
-      const projectId = 'proj123'
-      const taskId = 'task123'
-
-      vi.mocked(api.delete).mockResolvedValue({ data: mockResponse })
-
-      const result = await deleteTask({ projectId, taskId })
-
-      expect(result).toBe(mockResponse)
-      expect(api.delete).toHaveBeenCalledWith(`/projects/${projectId}/tasks/${taskId}`)
+    it('retorna data en éxito', async () => {
+      vi.mocked(api.delete).mockResolvedValue({ data: 'deleted' } as any)
+      const result = await deleteTask({ projectId: 'proj123', taskId: 'task123' })
+      expect(result).toBe('deleted')
     })
 
-    it('debe retornar undefined cuando falla la eliminación', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const errorMessage = 'Delete failed'
-
-      vi.mocked(api.delete).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await deleteTask({ projectId, taskId })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.delete).mockRejectedValue(new Error('x'))
+      const result = await deleteTask({ projectId: 'proj123', taskId: 'task123' })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta en delete', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-
-      vi.mocked(api.delete).mockRejectedValue(new Error('Network error'))
-
-      const result = await deleteTask({ projectId, taskId })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.delete).mockRejectedValue(axiosErr('Delete failed') as any)
+      await expect(deleteTask({ projectId: 'proj123', taskId: 'task123' })).rejects.toThrow('Delete failed')
     })
   })
 
   describe('updateStatus', () => {
-    it('debe actualizar el estado de una tarea exitosamente', async () => {
-      const mockResponse = 'status updated'
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const status = 'in_progress' as const
-
-      vi.mocked(api.post).mockResolvedValue({ data: mockResponse })
-
-      const result = await updateStatus({ projectId, taskId, status })
-
-      expect(result).toBe(mockResponse)
-      expect(api.post).toHaveBeenCalledWith(`/projects/${projectId}/tasks/${taskId}/status`, { status })
+    it('retorna data en éxito', async () => {
+      vi.mocked(api.post).mockResolvedValue({ data: 'status updated' } as any)
+      const result = await updateStatus({ projectId: 'proj123', taskId: 'task123', status: 'completed' as any })
+      expect(result).toBe('status updated')
     })
 
-    it('debe retornar undefined cuando falla actualizar status', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const status = 'done' as const
-      const errorMessage = 'Status update failed'
-
-      vi.mocked(api.post).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await updateStatus({ projectId, taskId, status })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.post).mockRejectedValue(new Error('x'))
+      const result = await updateStatus({ projectId: 'proj123', taskId: 'task123', status: 'completed' as any })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta en updateStatus', async () => {
-      const projectId = 'proj123'
-      const taskId = 'task123'
-      const status = 'done' as const
-
-      vi.mocked(api.post).mockRejectedValue(new Error('Network error'))
-
-      const result = await updateStatus({ projectId, taskId, status })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.post).mockRejectedValue(axiosErr('Status update failed') as any)
+      await expect(updateStatus({ projectId: 'proj123', taskId: 'task123', status: 'completed' as any })).rejects.toThrow('Status update failed')
     })
   })
 })

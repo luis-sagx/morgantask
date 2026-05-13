@@ -5,6 +5,11 @@ import { createNote, deleteNote } from './NoteAPI'
 vi.mock('@/lib/axios')
 
 describe('NoteAPI', () => {
+  const axiosErr = (message: string) => ({
+    isAxiosError: true,
+    response: { data: { error: message } }
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -24,18 +29,25 @@ describe('NoteAPI', () => {
       expect(api.post).toHaveBeenCalledWith(`/projects/${projectId}/tasks/${taskId}/notes`, formData)
     })
 
-    it('debe retornar undefined cuando falla la creación de nota', async () => {
+    it('debe retornar undefined cuando falla la creación de nota en error no axios', async () => {
       const projectId = 'proj123'
       const taskId = 'task123'
       const formData = { content: 'Test note content' }
-      const errorMessage = 'Note creation failed'
 
-      vi.mocked(api.post).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
+      vi.mocked(api.post).mockRejectedValue(new Error('x'))
 
       const result = await createNote({ projectId, taskId, formData })
       expect(result).toBeUndefined()
+    })
+
+    it('debe lanzar error cuando axios response existe al crear nota', async () => {
+      const projectId = 'proj123'
+      const taskId = 'task123'
+      const formData = { content: 'Test note content' }
+
+      vi.mocked(api.post).mockRejectedValue(axiosErr('Note creation failed') as any)
+
+      await expect(createNote({ projectId, taskId, formData })).rejects.toThrow('Note creation failed')
     })
 
     it('debe manejar errores sin respuesta en create', async () => {
@@ -65,18 +77,25 @@ describe('NoteAPI', () => {
       expect(api.delete).toHaveBeenCalledWith(`/projects/${projectId}/tasks/${taskId}/notes/${noteId}`)
     })
 
-    it('debe retornar undefined cuando falla la eliminación de nota', async () => {
+    it('debe retornar undefined cuando falla la eliminación de nota en error no axios', async () => {
       const projectId = 'proj123'
       const taskId = 'task123'
       const noteId = 'note123'
-      const errorMessage = 'Note not found'
 
-      vi.mocked(api.delete).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
+      vi.mocked(api.delete).mockRejectedValue(new Error('x'))
 
       const result = await deleteNote({ projectId, taskId, noteId })
       expect(result).toBeUndefined()
+    })
+
+    it('debe lanzar error cuando axios response existe al eliminar nota', async () => {
+      const projectId = 'proj123'
+      const taskId = 'task123'
+      const noteId = 'note123'
+
+      vi.mocked(api.delete).mockRejectedValue(axiosErr('Note not found') as any)
+
+      await expect(deleteNote({ projectId, taskId, noteId })).rejects.toThrow('Note not found')
     })
 
     it('debe manejar errores sin respuesta en delete', async () => {

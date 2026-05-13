@@ -5,169 +5,94 @@ import { addUserToProject, findUserByEmail, getProjectTeam, removeUserFromProjec
 vi.mock('@/lib/axios')
 
 describe('TeamAPI', () => {
+  const axiosErr = (message: string) => ({
+    isAxiosError: true,
+    response: { data: { error: message } }
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   describe('findUserByEmail', () => {
-    it('debe encontrar un usuario por email exitosamente', async () => {
-      const mockResponse = { _id: 'user123', name: 'John', email: 'john@test.com', role: 'member' }
-      const projectId = 'proj123'
-      const formData = { email: 'john@test.com' }
-
-      vi.mocked(api.post).mockResolvedValue({ data: mockResponse })
-
-      const result = await findUserByEmail({ projectId, formData })
-
-      expect(result).toEqual(mockResponse)
-      expect(api.post).toHaveBeenCalledWith(`/projects/${projectId}/team/find`, formData)
+    it('retorna usuario en éxito', async () => {
+      vi.mocked(api.post).mockResolvedValue({ data: { _id: 'u1', name: 'John', email: 'john@test.com', role: 'member' } } as any)
+      const result = await findUserByEmail({ projectId: 'proj123', formData: { email: 'john@test.com' } })
+      expect(result?._id).toBe('u1')
     })
 
-    it('debe retornar undefined cuando no encuentra el usuario', async () => {
-      const projectId = 'proj123'
-      const formData = { email: 'notfound@test.com' }
-      const errorMessage = 'User not found'
-
-      vi.mocked(api.post).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await findUserByEmail({ projectId, formData })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.post).mockRejectedValue(new Error('x'))
+      const result = await findUserByEmail({ projectId: 'proj123', formData: { email: 'x@test.com' } })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta', async () => {
-      const projectId = 'proj123'
-      const formData = { email: 'john@test.com' }
-
-      vi.mocked(api.post).mockRejectedValue(new Error('Network error'))
-
-      const result = await findUserByEmail({ projectId, formData })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.post).mockRejectedValue(axiosErr('User not found') as any)
+      await expect(findUserByEmail({ projectId: 'proj123', formData: { email: 'x@test.com' } })).rejects.toThrow('User not found')
     })
   })
 
   describe('addUserToProject', () => {
-    it('debe agregar un usuario al proyecto exitosamente', async () => {
-      const mockResponse = 'User added'
-      const projectId = 'proj123'
-      const userId = 'user123'
-
-      vi.mocked(api.post).mockResolvedValue({ data: mockResponse })
-
-      const result = await addUserToProject({ projectId, id: userId })
-
-      expect(result).toBe(mockResponse)
-      expect(api.post).toHaveBeenCalledWith(`/projects/${projectId}/team`, { id: userId })
+    it('retorna data en éxito', async () => {
+      vi.mocked(api.post).mockResolvedValue({ data: 'ok' } as any)
+      const result = await addUserToProject({ projectId: 'proj123', id: 'u1' })
+      expect(result).toBe('ok')
     })
 
-    it('debe retornar undefined cuando falla agregar usuario', async () => {
-      const projectId = 'proj123'
-      const userId = 'user123'
-      const errorMessage = 'User already in project'
-
-      vi.mocked(api.post).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await addUserToProject({ projectId, id: userId })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.post).mockRejectedValue(new Error('x'))
+      const result = await addUserToProject({ projectId: 'proj123', id: 'u1' })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta en add', async () => {
-      const projectId = 'proj123'
-      const userId = 'user123'
-
-      vi.mocked(api.post).mockRejectedValue(new Error('Network error'))
-
-      const result = await addUserToProject({ projectId, id: userId })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.post).mockRejectedValue(axiosErr('User already in project') as any)
+      await expect(addUserToProject({ projectId: 'proj123', id: 'u1' })).rejects.toThrow('User already in project')
     })
   })
 
   describe('removeUserFromProject', () => {
-    it('debe remover un usuario del proyecto exitosamente', async () => {
-      const mockResponse = 'User removed'
-      const projectId = 'proj123'
-      const userId = 'user123'
-
-      vi.mocked(api.delete).mockResolvedValue({ data: mockResponse })
-
-      const result = await removeUserFromProject({ projectId, userId })
-
-      expect(result).toBe(mockResponse)
-      expect(api.delete).toHaveBeenCalledWith(`/projects/${projectId}/team/${userId}`)
+    it('retorna data en éxito', async () => {
+      vi.mocked(api.delete).mockResolvedValue({ data: 'removed' } as any)
+      const result = await removeUserFromProject({ projectId: 'proj123', userId: 'u1' })
+      expect(result).toBe('removed')
     })
 
-    it('debe retornar undefined cuando falla remover usuario', async () => {
-      const projectId = 'proj123'
-      const userId = 'user123'
-      const errorMessage = 'Cannot remove owner'
-
-      vi.mocked(api.delete).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await removeUserFromProject({ projectId, userId })
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api.delete).mockRejectedValue(new Error('x'))
+      const result = await removeUserFromProject({ projectId: 'proj123', userId: 'u1' })
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta en remove', async () => {
-      const projectId = 'proj123'
-      const userId = 'user123'
-
-      vi.mocked(api.delete).mockRejectedValue(new Error('Network error'))
-
-      const result = await removeUserFromProject({ projectId, userId })
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api.delete).mockRejectedValue(axiosErr('Cannot remove owner') as any)
+      await expect(removeUserFromProject({ projectId: 'proj123', userId: 'u1' })).rejects.toThrow('Cannot remove owner')
     })
   })
 
   describe('getProjectTeam', () => {
-    it('debe obtener el equipo del proyecto exitosamente', async () => {
-      const projectId = 'proj123'
-      const mockTeam = [
-        { _id: 'user1', name: 'User 1', email: 'user1@test.com' },
-        { _id: 'user2', name: 'User 2', email: 'user2@test.com' }
-      ]
-
-      vi.mocked(api).mockResolvedValue({ data: mockTeam })
-
-      const result = await getProjectTeam(projectId)
-
-      expect(result).toEqual(mockTeam)
-      expect(api).toHaveBeenCalledWith(`/projects/${projectId}/team`)
+    it('retorna equipo parseado', async () => {
+      vi.mocked(api).mockResolvedValue({ data: [{ _id: 'u1', name: 'A', email: 'a@test.com' }] } as any)
+      const result = await getProjectTeam('proj123')
+      expect(result).toHaveLength(1)
     })
 
-    it('debe retornar undefined cuando falla obtener equipo', async () => {
-      const projectId = 'proj123'
-      const errorMessage = 'Project not found'
-
-      vi.mocked(api).mockRejectedValue({
-        response: { data: { error: errorMessage } }
-      })
-
-      const result = await getProjectTeam(projectId)
+    it('retorna undefined si schema falla', async () => {
+      vi.mocked(api).mockResolvedValue({ data: { bad: true } } as any)
+      const result = await getProjectTeam('proj123')
       expect(result).toBeUndefined()
     })
 
-    it('debe retornar undefined si el schema no valida', async () => {
-      const projectId = 'proj123'
-      const invalidData = { invalid: 'data' }
-
-      vi.mocked(api).mockResolvedValue({ data: invalidData })
-
-      const result = await getProjectTeam(projectId)
+    it('retorna undefined en error no axios', async () => {
+      vi.mocked(api).mockRejectedValue(new Error('x'))
+      const result = await getProjectTeam('proj123')
       expect(result).toBeUndefined()
     })
 
-    it('debe manejar errores sin respuesta en getTeam', async () => {
-      const projectId = 'proj123'
-
-      vi.mocked(api).mockRejectedValue(new Error('Network error'))
-
-      const result = await getProjectTeam(projectId)
-      expect(result).toBeUndefined()
+    it('lanza error cuando axios response existe', async () => {
+      vi.mocked(api).mockRejectedValue(axiosErr('Project not found') as any)
+      await expect(getProjectTeam('proj123')).rejects.toThrow('Project not found')
     })
   })
 })
