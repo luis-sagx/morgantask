@@ -1,0 +1,62 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { beforeEach, describe, it, vi } from 'vitest'
+import ProjectTeamView from './ProjectTeamView'
+
+vi.mock('@tanstack/react-query', () => ({
+  useQuery: vi.fn(),
+  useMutation: vi.fn(),
+  useQueryClient: vi.fn()
+}))
+
+vi.mock('@/components/team/AddMemberModal', () => ({
+  default: () => <div>AddMemberModal</div>
+}))
+
+describe('ProjectTeamView', () => {
+  const mutate = vi.fn()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries: vi.fn() } as any)
+  })
+
+  const renderView = () =>
+    render(
+      <MemoryRouter initialEntries={['/projects/proj123/team']}>
+        <Routes>
+          <Route path="/projects/:projectId/team" element={<ProjectTeamView />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+  it('muestra cargando', () => {
+    vi.mocked(useQuery).mockReturnValue({ isLoading: true, isError: false, data: undefined } as any)
+    renderView()
+    expect(screen.getByText('Cargando...')).toBeInTheDocument()
+  })
+
+  it('muestra estado vacío', () => {
+    vi.mocked(useQuery).mockReturnValue({ isLoading: false, isError: false, data: [] } as any)
+    renderView()
+    expect(screen.getByText('No hay miembros en este equipo')).toBeInTheDocument()
+  })
+
+  it('renderiza miembros y permite eliminar', () => {
+    vi.mocked(useQuery).mockReturnValue({
+      isLoading: false,
+      isError: false,
+      data: [{ _id: 'u1', name: 'John', email: 'john@test.com' }]
+    } as any)
+
+    renderView()
+    expect(screen.getByText('Administrar Equipo')).toBeInTheDocument()
+    expect(screen.getByText('John')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /opciones/i }))
+    fireEvent.click(screen.getByText('Eliminar del Proyecto'))
+    expect(mutate).toHaveBeenCalledWith({ projectId: 'proj123', userId: 'u1' })
+  })
+})
