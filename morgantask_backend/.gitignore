@@ -1,11 +1,12 @@
 .env
 node_modules/
+.pnpm-store/
 package-lock.json
 .DS_Store
 dist
-.pnpm-store
 logs
 *.log
 coverage
+*.tsbuildinfo
 .idea/
 .vscode/

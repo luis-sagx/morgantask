@@ -13,7 +13,7 @@ export default function ProfileForm({ data } : ProfileFormProps) {
     const { register, handleSubmit, formState: { errors } } = useForm<UserProfileForm>({ defaultValues: data })
 
     const queryClient = useQueryClient()
-    const { mutate } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: updateProfile,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {

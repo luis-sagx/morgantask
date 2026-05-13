@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Task, TaskFormData } from '@/types/index';
 import { useForm } from 'react-hook-form';
 import TaskForm from './TaskForm';
@@ -20,13 +20,13 @@ export default function EditTaskModal({data, taskId} : EditTaskModalProps) {
     const params = useParams()
     const projectId = params.projectId!
 
-    const { register, handleSubmit, reset, formState: {errors}  } = useForm<TaskFormData>({defaultValues: {
+    const { register, handleSubmit, reset, formState: {errors} } = useForm<TaskFormData>({defaultValues: {
         name: data.name,
         description: data.description
     }})
 
     const queryClient = useQueryClient()
-    const { mutate } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: updateTask,
         onError: (error) => {
             toast.error(error.message)

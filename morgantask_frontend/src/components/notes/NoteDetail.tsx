@@ -15,7 +15,7 @@ type NoteDetailProps = {
 export default function NoteDetail({ note }: NoteDetailProps) {
 
     const { data, isLoading } = useAuth()
-    const canDelete = useMemo(() => data?._id === note.createdBy._id, [data])
+    const canDelete = useMemo(() => data?._id === note.createdBy._id, [data, note.createdBy._id])
     const params = useParams()
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)

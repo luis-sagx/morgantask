@@ -16,7 +16,7 @@ export default function SearchResult({ user, reset }: SearchResultProps) {
     const projectId = params.projectId!
     
     const queryClient = useQueryClient()
-    const { mutate } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: addUserToProject,
         onError: (error) => {
             toast.error(error.message)

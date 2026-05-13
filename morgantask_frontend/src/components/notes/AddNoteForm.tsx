@@ -20,10 +20,10 @@ export default function AddNoteForm() {
         content: ''
     }
 
-    const { register, handleSubmit, reset, formState: {errors} } = useForm({defaultValues: initialValues})
+    const { register, handleSubmit, reset, formState: {errors} } = useForm({defaultValues: initialValues})
 
     const queryClient = useQueryClient()
-    const { mutate } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: createNote,
         onError: (error) => {
             toast.error(error.message)
