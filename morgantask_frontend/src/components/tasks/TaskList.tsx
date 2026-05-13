@@ -1,12 +1,12 @@
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
-import { Project, TaskProject, TaskStatus } from "@/types/index"
-import TaskCard from "./TaskCard"
-import { statusTranslations } from "@/locales/es"
-import DropTask from "./DropTask"
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateStatus } from '@/api/TaskAPI'
-import { toast } from 'react-toastify'
+import { statusTranslations } from "@/locales/es"
+import { Project, TaskProject, TaskStatus } from "@/types/index"
+import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import DropTask from "./DropTask"
+import TaskCard from "./TaskCard"
 
 type TaskListProps = {
     tasks: TaskProject[]
@@ -26,11 +26,11 @@ const initialStatusGroups: GroupedTasks = {
 }
 
 const statusStyles: { [key: string]: string } = {
-    pending: 'border-t-slate-500',
-    onHold: 'border-t-red-500',
-    inProgress: 'border-t-blue-500',
-    underReview: 'border-t-amber-500',
-    completed: 'border-t-emerald-500',
+    pending: 'bg-slate-300 text-gray-700',
+    onHold: 'bg-red-300 text-red-700',
+    inProgress: 'bg-blue-300 text-blue-700',
+    underReview: 'bg-amber-300 text-amber-700',
+    completed: 'bg-emerald-300 text-emerald-700',
 }
 
 export default function TaskList({ tasks, canEdit }: TaskListProps) {
@@ -84,21 +84,23 @@ export default function TaskList({ tasks, canEdit }: TaskListProps) {
 
     return (
         <>
-            <h2 className="text-2xl font-bold my-8">Tareas</h2>
+            <h2 className="my-8 text-2xl font-bold">Tareas</h2>
 
-            <div className='flex gap-5 overflow-x-scroll 2xl:overflow-auto pb-32'>
+            <div className='flex gap-5 pb-32 overflow-x-scroll 2xl:overflow-auto'>
                 <DndContext onDragEnd={handleDragEnd} >
                     {Object.entries(groupedTasks).map(([status, tasks]) => (
                         <div key={status} className='min-w-[300px] 2xl:min-w-0 2xl:w-1/5'>
                             <h3
-                                className={`capitalize text-base font-light border border-slate-300 bg-white p-3 border-t-8 ${statusStyles[status]} `}
-                            >{statusTranslations[status]}</h3>
+                                className={`p-3 ${statusStyles[status]}`}
+                            >
+                                    {statusTranslations[status]}
+                            </h3>
 
                             <DropTask status={status} />
 
                             <ul className='mt-5 space-y-5'>
                                 {tasks.length === 0 ? (
-                                    <li className="text-gray-500 text-center pt-3">No Hay tareas</li>
+                                    <li className="pt-3 text-center text-gray-500">No Hay tareas</li>
                                 ) : (
                                     tasks.map(task => <TaskCard key={task._id} task={task} canEdit={canEdit} />)
                                 )}

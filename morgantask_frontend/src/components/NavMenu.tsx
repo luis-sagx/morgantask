@@ -1,5 +1,5 @@
 import { Popover, Transition } from '@headlessui/react'
-import { Cog6ToothIcon } from '@heroicons/react/20/solid'
+import { ArrowRightOnRectangleIcon, Cog6ToothIcon, FolderIcon, UserCircleIcon } from '@heroicons/react/20/solid'
 import { useQueryClient } from '@tanstack/react-query'
 import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
@@ -19,7 +19,7 @@ export default function NavMenu({name} : NavMenuProps) {
 
   return (
     <Popover className="relative">
-      <Popover.Button className="inline-flex items-center text-gray-300 hover:text-white transition-colors">
+      <Popover.Button className="inline-flex items-center text-gray-300 transition-colors hover:text-white">
         <Cog6ToothIcon className='w-7 h-7' />
       </Popover.Button>
 
@@ -32,23 +32,23 @@ export default function NavMenu({name} : NavMenuProps) {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen lg:max-w-min -translate-x-1/2 lg:-translate-x-48">
-          <div className="w-full lg:w-56 shrink rounded-xl bg-white p-4 text-sm font-semibold leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5">
-            <p className='text-center'>Hola: {name}</p>
+        <Popover.Panel className="absolute z-10 flex w-screen mt-5 -translate-x-1/2 left-1/2 lg:max-w-min lg:-translate-x-48">
+          <div className="w-full p-4 text-sm font-semibold leading-6 text-gray-900 bg-white shadow-lg lg:w-56 shrink rounded-xl ring-1 ring-gray-900/5">
+            <p className='text-lg font-semibold'>Hola: {name}</p>
             <Link
               to='/profile'
-              className='block p-2 hover:text-sky-950'
-            >Mi Perfil</Link>
+              className='flex items-center gap-2 p-2 hover:text-sky-950'
+            ><UserCircleIcon className='w-5 h-5' />Mi Perfil</Link>
             <Link
               to='/'
-              className='block p-2 hover:text-sky-950'
-            >Mis Proyectos</Link>
+              className='flex items-center gap-2 p-2 hover:text-sky-950'
+            ><FolderIcon className='w-5 h-5' />Mis Proyectos</Link>
             <button
-              className='block p-2 hover:text-sky-950'
+              className='flex items-center w-full gap-2 p-2 hover:text-sky-950'
               type='button'
               onClick={logout}
             >
-              Cerrar Sesión
+              <ArrowRightOnRectangleIcon className='w-5 h-5' />Cerrar Sesión
             </button>
           </div>
         </Popover.Panel>
