@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "lib": ["ESNext"],
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "sourceMap": true,
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./morgantask_backend/node_modules/@types",
+      "./morgantask_frontend/node_modules/@types"
+    ]
+  },
+  "include": [
+    "morgantask_backend/src/**/*.ts",
+    "morgantask_frontend/src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

@@ -14,7 +14,7 @@ export default function AppLayout() {
     }
 
     if(data) return (
-        <>
+        <div className='flex min-h-screen flex-col'>
             <header className='px-6 py-4 bg-gray-900'>
                 <div className='flex flex-col items-center justify-between mx-auto max-w-screen-2xl lg:flex-row'>
                     <div className='w-64'>
@@ -31,11 +31,13 @@ export default function AppLayout() {
                 </div>
             </header>
 
-            <section className='p-5 mx-auto mt-10 max-w-screen-2xl'>
-                <Outlet />
-            </section>
+            <main className='flex-1'>
+                <section className='p-5 mx-auto mt-10 max-w-screen-2xl'>
+                    <Outlet />
+                </section>
+            </main>
 
-            <footer className='py-5'>
+            <footer className='py-5 mt-auto'>
                 <p className='text-center'>
                     Todos los derechos reservados {new Date().getFullYear()}
                 </p>
@@ -45,6 +47,6 @@ export default function AppLayout() {
                 pauseOnHover={false}
                 pauseOnFocusLoss={false}
             />
-        </>
+        </div>
     )
 }

@@ -7,14 +7,18 @@
             "esnext"
         ],
         "target": "ESNext",
-        "moduleResolution": "NodeNext",
-        "types": ["node", "jest"],
-        "module": "NodeNext",
-        "strict": false,
-        "sourceMap": true,
+"moduleResolution": "NodeNext",
+"types": ["node", "jest"],
+"module": "NodeNext",
+"strict": false,
+"sourceMap": true,
         "isolatedModules": true,
         "esModuleInterop": true,
-        "declaration": true
+        "declaration": false,
+        "baseUrl": ".",
+        "typeRoots": [
+            "./node_modules/@types"
+        ]
     },
     "include": [
         "src/**/*.ts"

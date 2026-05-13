@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+
 import { teamUseCases } from '../../infrastructure/container'
 
 export class TeamMemberController {

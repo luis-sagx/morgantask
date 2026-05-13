@@ -102,23 +102,9 @@ export default function TaskModalDetails() {
                                                 ))}
                                             </ul>
                                         </>
-                                    ) : null }
+                                    ) : null}
 
-
-                                    <div className='my-5 space-y-3'>
-                                        <label className='font-bold'>Estado Actual:</label>
-                                        <select
-                                            className='w-full p-3 bg-white border border-gray-300'
-                                            defaultValue={data.status}
-                                            onChange={handleChange}
-                                        >
-                                            {Object.entries(statusTranslations).map(([key, value]) => (
-                                                <option key={key} value={key}>{value}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    <NotesPanel 
+                                    <NotesPanel
                                         notes={data.notes}
                                     />
                                 </Dialog.Panel>
