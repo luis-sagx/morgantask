@@ -1,7 +1,8 @@
-import express from 'express'
-import dotenv from 'dotenv'
 import cors from 'cors'
+import dotenv from 'dotenv'
+import express from 'express'
 import morgan from 'morgan'
+
 import { corsConfig } from './infrastructure/config/cors'
 import { connectDB } from './infrastructure/config/db'
 import authRoutes from './interfaces/routes/authRoutes'

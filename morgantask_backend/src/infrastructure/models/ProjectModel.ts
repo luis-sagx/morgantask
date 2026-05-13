@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Types } from 'mongoose'
-import TaskModel from './TaskModel'
+
 import NoteModel from './NoteModel'
+import TaskModel from './TaskModel'
 
 export interface IProjectDoc extends Document {
     projectName: string

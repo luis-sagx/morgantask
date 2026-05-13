@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+
 import { noteUseCases } from '../../infrastructure/container'
 
 export class NoteController {

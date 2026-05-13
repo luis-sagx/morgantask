@@ -1,6 +1,6 @@
 import { ITask, TaskStatus } from '../../domain/entities/Task'
-import { ITaskRepository } from '../../domain/ports/ITaskRepository'
 import { IProjectRepository } from '../../domain/ports/IProjectRepository'
+import { ITaskRepository } from '../../domain/ports/ITaskRepository'
 
 export class TaskUseCases {
     constructor(

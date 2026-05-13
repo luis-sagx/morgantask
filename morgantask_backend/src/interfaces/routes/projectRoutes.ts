@@ -1,13 +1,14 @@
 import { Router } from 'express'
 import { body, param } from 'express-validator'
+
+import { NoteController } from '../controllers/NoteController'
 import { ProjectController } from '../controllers/ProjectController'
-import { handleInputErrors } from '../middleware/validation'
 import { TaskController } from '../controllers/TaskController'
+import { TeamMemberController } from '../controllers/TeamController'
+import { authenticate } from '../middleware/auth'
 import { projectExists } from '../middleware/project'
 import { hasAuthorization, taskBelongsToProject, taskExists } from '../middleware/task'
-import { authenticate } from '../middleware/auth'
-import { TeamMemberController } from '../controllers/TeamController'
-import { NoteController } from '../controllers/NoteController'
+import { handleInputErrors } from '../middleware/validation'
 
 const router = Router()
 
