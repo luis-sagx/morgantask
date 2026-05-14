@@ -12,10 +12,13 @@ export interface ITaskDoc extends Document {
     project: Types.ObjectId
     status: TaskStatus
     completedBy: {
+        _id: Types.ObjectId
         user: Types.ObjectId
         status: TaskStatus
     }[]
     notes: Types.ObjectId[]
+    createdAt: Date
+    updatedAt: Date
 }
 
 const TaskSchema: Schema = new Schema({

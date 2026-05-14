@@ -1,20 +1,52 @@
-import { ITask, TaskStatus } from '../../domain/entities/Task'
+import { ITask, ICompletedByUser, INoteProjection, TaskStatus } from '../../domain/entities/Task'
 import { ITaskRepository } from '../../domain/ports/ITaskRepository'
 import TaskModel, { ITaskDoc } from '../models/TaskModel'
 
+type PopulatedUser = { _id: { toString(): string }; name: string; email: string }
+type PopulatedNote = { _id: { toString(): string }; content: string; createdBy: PopulatedUser; task: { toString(): string }; createdAt: string }
+
 export class MongoTaskRepository implements ITaskRepository {
-    private toEntity(doc: ITaskDoc): ITask {
+    private toEntity(doc: ITaskDoc, populate = false): ITask {
+        const completedBy: ITask['completedBy'] = doc.completedBy.map(cb => {
+            const user = cb.user as unknown
+            if (populate && typeof user === 'object' && user !== null && 'toJSON' in user) {
+                const u = user as unknown as PopulatedUser
+                return {
+                    _id: cb._id.toString(),
+                    user: { _id: u._id.toString(), name: u.name, email: u.email },
+                    status: cb.status
+                }
+            }
+            return {
+                _id: cb._id.toString(),
+                user: (user as { toString(): string }).toString(),
+                status: cb.status
+            }
+        })
+
+        const notes: ITask['notes'] = populate
+            ? doc.notes.map(n => {
+                const note = n as unknown as PopulatedNote
+                return {
+                    _id: note._id.toString(),
+                    content: note.content,
+                    createdBy: { _id: note.createdBy._id.toString(), name: note.createdBy.name, email: note.createdBy.email },
+                    task: note.task.toString(),
+                    createdAt: note.createdAt
+                } as INoteProjection
+            })
+            : doc.notes.map(n => n.toString())
+
         return {
             _id: doc.id.toString(),
             name: doc.name,
             description: doc.description,
             project: doc.project.toString(),
             status: doc.status,
-            completedBy: doc.completedBy.map(cb => ({
-                user: cb.user.toString(),
-                status: cb.status
-            })),
-            notes: doc.notes.map(n => n.toString())
+            completedBy,
+            notes,
+            createdAt: doc.createdAt.toISOString(),
+            updatedAt: doc.updatedAt.toISOString()
         }
     }
 
@@ -38,7 +70,7 @@ export class MongoTaskRepository implements ITaskRepository {
         const task = await TaskModel.findById(id)
             .populate({ path: 'completedBy.user', select: 'id name email' })
             .populate({ path: 'notes', populate: { path: 'createdBy', select: 'id name email' } })
-        return task ? this.toEntity(task) : null
+        return task ? this.toEntity(task, true) : null
     }
 
     async update(id: string, data: Pick<ITask, 'name' | 'description'>): Promise<void> {

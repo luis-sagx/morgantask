@@ -1,10 +1,10 @@
-import { NoteFormData } from '@/types/index'
-import { useForm } from 'react-hook-form'
-import ErrorMessage from '../ErrorMessage'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createNote } from '@/api/NoteAPI'
-import { toast } from 'react-toastify'
+import { NoteFormData } from '@/types/index'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
 import { useLocation, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import ErrorMessage from '../ErrorMessage'
 
 export default function AddNoteForm() {
 
@@ -44,8 +44,8 @@ export default function AddNoteForm() {
             className="space-y-3"
             noValidate
         >
-            <div className="flex flex-col gap-2">
-                <label className="font-bold" htmlFor="content">Crear Nota</label>
+            <div className="flex flex-col gap-2 mt-6">
+                <label className="text-lg font-bold text-indigo-600" htmlFor="content">Crear Nota</label>
                 <input
                     id="content"
                     type="text"
@@ -63,7 +63,7 @@ export default function AddNoteForm() {
             <input
                 type="submit"
                 value='Crear Nota'
-                className=" bg-indigo-600 hover:bg-cyan-500 w-full p-2 text-white font-black cursor-pointer rounded-md"
+                className="w-full p-2 font-black text-white bg-indigo-600 rounded-md cursor-pointer hover:bg-cyan-500"
             />
         </form>
     )

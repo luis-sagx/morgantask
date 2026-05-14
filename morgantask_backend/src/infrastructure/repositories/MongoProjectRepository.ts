@@ -1,16 +1,29 @@
-import { IProject } from '../../domain/entities/Project'
+import { IProject, ITaskProjection } from '../../domain/entities/Project'
 import { IPublicUser } from '../../domain/entities/User'
 import { IProjectRepository } from '../../domain/ports/IProjectRepository'
 import ProjectModel, { IProjectDoc } from '../models/ProjectModel'
 
 export class MongoProjectRepository implements IProjectRepository {
-    private toEntity(doc: IProjectDoc): IProject {
+    private toEntity(doc: IProjectDoc, populateTasks = false): IProject {
+        let tasks: string[] | ITaskProjection[]
+        if (populateTasks) {
+            // When tasks are populated, each element is a full Task document
+            tasks = (doc.tasks as unknown as Array<{ id: { toString(): string }; name: string; description: string; status: string }>).map(t => ({
+                _id: t.id.toString(),
+                name: t.name,
+                description: t.description,
+                status: t.status
+            }))
+        } else {
+            tasks = doc.tasks.map(t => t.toString())
+        }
+
         return {
             _id: doc.id.toString(),
             projectName: doc.projectName,
             clientName: doc.clientName,
             description: doc.description,
-            tasks: doc.tasks.map(t => t.toString()),
+            tasks,
             manager: doc.manager.toString(),
             team: doc.team.map(m => m.toString())
         }
@@ -39,7 +52,7 @@ export class MongoProjectRepository implements IProjectRepository {
 
     async findByIdWithTasks(id: string): Promise<IProject | null> {
         const project = await ProjectModel.findById(id).populate('tasks')
-        return project ? this.toEntity(project) : null
+        return project ? this.toEntity(project, true) : null
     }
 
     async update(id: string, data: Pick<IProject, 'projectName' | 'clientName' | 'description'>): Promise<void> {

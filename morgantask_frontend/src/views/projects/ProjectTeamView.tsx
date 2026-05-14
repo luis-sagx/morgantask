@@ -33,7 +33,7 @@ export default function ProjectTeamView() {
     })
 
     if(isLoading) return 'Cargando...'
-    if(isError) return <Navigate to={'/404'} />
+    if(isError) return <Navigate to='/' />
     if(data) return (
         <>
             <h1 className="text-3xl font-bold">Administrar Equipo</h1>

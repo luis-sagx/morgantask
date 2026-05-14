@@ -1,11 +1,11 @@
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query'
-import { toast } from 'react-toastify';
 import { getTaskById } from '@/api/TaskAPI';
-import { formatDate } from '@/utils/utils';
 import { statusTranslations } from '@/locales/es';
+import { formatDate } from '@/utils/utils';
+import { Dialog, Transition } from '@headlessui/react';
+import { useQuery } from '@tanstack/react-query';
+import { Fragment } from 'react';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import NotesPanel from '../notes/NotesPanel';
 
 export default function TaskModalDetails() {
@@ -47,7 +47,7 @@ export default function TaskModalDetails() {
                     </Transition.Child>
 
                     <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4 text-center">
+                        <div className="flex items-center justify-center min-h-full p-4 text-center">
                             <Transition.Child
                                 as={Fragment}
                                 enter="ease-out duration-300"
@@ -57,22 +57,22 @@ export default function TaskModalDetails() {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all p-16">
+                                <Dialog.Panel className="w-full max-w-4xl p-16 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                                     <p className='text-sm text-slate-400'>Agregada el: {formatDate(data.createdAt)} </p>
                                     <p className='text-sm text-slate-400'>Última actualización: {formatDate(data.updatedAt)} </p>
 
                                     <Dialog.Title
                                         as="h3"
-                                        className="font-bold text-2xl text-slate-600 my-4"
+                                        className="my-4 text-2xl font-bold text-slate-600"
                                     >{data.name} </Dialog.Title>
 
-                                    <p className='text-base text-slate-500 mb-2'>Descripción: {data.description}</p>
+                                    <p className='mb-2 text-base text-slate-500'>Descripción: {data.description}</p>
 
                                     {data.completedBy.length ? (
                                         <>
-                                            <p className='font-bold text-lg text-slate-600 my-4'>Historial de Cambios</p>
+                                            <p className='my-4 text-lg font-bold text-indigo-600'>Historial de Cambios</p>
 
-                                            <ul className=' list-decimal'>
+                                            <ul className='ml-6 list-decimal'>
                                                 {data.completedBy.map((activityLog) => (
                                                     <li key={activityLog._id}>
                                                         <span className='font-bold text-slate-600'>

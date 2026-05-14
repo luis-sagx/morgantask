@@ -17,7 +17,7 @@ export default function EditTaskData() {
         enabled: !!taskId
     })
 
-    if(isError) return <Navigate to={'/404'} />
+    if(isError) return <Navigate to='/' />
 
     if(data) return <EditTaskModal data={data} taskId={taskId} />
 }
