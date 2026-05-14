@@ -300,24 +300,26 @@ jobs:
           echo "FRONTEND_PORT=80" >> .env.production
 
       - name: Start application stack
-        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+        run: docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
       - name: Wait for nginx and API
         run: |
           for attempt in $(seq 1 30); do
-            status_code="$(curl -s -o /dev/null -w '%{http_code}' http://localhost/api/auth/user || true)"
-            if [ "$status_code" = "401" ] || [ "$status_code" = "200" ]; then
+            nginx_status="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/health || true)"
+            api_status="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/api/auth/user || true)"
+            echo "Attempt $attempt: nginx=$nginx_status api=$api_status"
+            if [ "$nginx_status" = "200" ] && { [ "$api_status" = "401" ] || [ "$api_status" = "200" ]; }; then
               exit 0
             fi
             sleep 5
           done
           echo "Application stack did not become ready in time."
-          docker compose -f docker-compose.yml -f docker-compose.prod.yml logs
+          docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml logs
           exit 1
 
       - name: Run smoke performance test
         env:
-          BASE_URL: http://localhost
+          BASE_URL: http://127.0.0.1
           TEST_EMAIL: k6-${{ github.run_id }}-smoke@morgantask.com
           TEST_PASSWORD: testpassword123
         run: k6 run k6/smoke_test.js
@@ -325,7 +327,7 @@ jobs:
       - name: Run load performance test
         if: ${{ github.event_name != 'pull_request' }}
         env:
-          BASE_URL: http://localhost
+          BASE_URL: http://127.0.0.1
           TEST_EMAIL: k6-${{ github.run_id }}-load@morgantask.com
           TEST_PASSWORD: testpassword123
         run: k6 run k6/load_test.js
@@ -333,7 +335,7 @@ jobs:
       - name: Run stress performance test
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_full_k6_suite == 'true' }}
         env:
-          BASE_URL: http://localhost
+          BASE_URL: http://127.0.0.1
           TEST_EMAIL: k6-${{ github.run_id }}-stress@morgantask.com
           TEST_PASSWORD: testpassword123
         run: k6 run k6/stress_test.js
@@ -341,15 +343,15 @@ jobs:
       - name: Run spike performance test
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_full_k6_suite == 'true' }}
         env:
-          BASE_URL: http://localhost
+          BASE_URL: http://127.0.0.1
           TEST_EMAIL: k6-${{ github.run_id }}-spike@morgantask.com
           TEST_PASSWORD: testpassword123
         run: k6 run k6/spike_test.js
 
       - name: Show compose logs on failure
         if: failure()
-        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --no-color
+        run: docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml logs --no-color
 
       - name: Stop application stack
         if: always()
-        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml down -v
+        run: docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml down -v
