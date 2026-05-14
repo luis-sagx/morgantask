@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Trivy filesystem scan
+      - name: Generate Trivy filesystem SARIF
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
@@ -29,6 +29,17 @@ jobs:
           output: trivy-fs.sarif
           severity: HIGH,CRITICAL
           ignore-unfixed: true
+          exit-code: "0"
+
+      - name: Run Trivy filesystem gate
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          skip-setup-trivy: true
           exit-code: "1"
 
       - name: Upload filesystem SARIF
@@ -45,7 +56,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Trivy config scan
+      - name: Generate Trivy config SARIF
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
@@ -53,6 +64,16 @@ jobs:
           format: sarif
           output: trivy-config.sarif
           severity: HIGH,CRITICAL
+          exit-code: "0"
+
+      - name: Run Trivy config gate
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: config
+          scan-ref: .
+          format: table
+          severity: HIGH,CRITICAL
+          skip-setup-trivy: true
           exit-code: "1"
 
       - name: Upload config SARIF
