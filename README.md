@@ -1,362 +1,153 @@
 # Morgan Task
 
-App full-stack para gestion de proyectos, tareas, notas y equipos.
+App full-stack para gestión de proyectos, tareas, notas y equipos.
 
-## Tecnologias
+## Stack
 
-- Backend: Node.js, Express, TypeScript, MongoDB, Mongoose, JWT, bcrypt, Morgan
-- Frontend: React, Vite, TypeScript, Tailwind CSS, React Router, React Query, Axios
-- Infra: Docker Compose (MongoDB + servicios Node)
+- **Backend**: Node.js, Express, TypeScript, MongoDB, Mongoose, JWT, bcrypt, Morgan
+- **Frontend**: React, Vite, TypeScript, Tailwind CSS, React Router, React Query, Axios
+- **Infra**: Docker Compose, Nginx
 
-## Requisitos
+---
 
-- Node.js 20+
-- npm
-- pnpm
-- MongoDB local o via Docker Compose
+## Desarrollo local con Docker
 
-## Instalacion local
+### Requisitos
+
+- Docker + Docker Compose
+
+### Levantar
 
 ```bash
-cd morgantask_backend
-npm install
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
 
-cd ../morgantask_frontend
+Servicios accesibles:
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:4000/api`
+- MongoDB: `localhost:27019` (para conectar desde Compass o Studio 3T)
+
+### Bajar
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+```
+
+- Mantiene datos de MongoDB: `down`
+- Borra datos de MongoDB: `down -v`
+
+---
+
+## Desarrollo local sin Docker (opcional)
+
+Si preferís correr los servicios directamente en tu máquina:
+
+```bash
+# Backend
+cd morgantask_backend
 pnpm install
-```
+pnpm run dev
 
-## Variables de entorno
-
-### Backend
-
-Crear [morgantask_backend/.env](morgantask_backend/.env) basado en [morgantask_backend/.env.local](morgantask_backend/.env.local):
-
-```dotenv
-DATABASE_URL=mongodb://morgantask:morgantask@localhost:27019/morgantask_mern?authSource=admin
-FRONTEND_URL=http://localhost:5173
-JWT_SECRET=palabrasupersecreta
-# PORT=4000
-```
-
-### Frontend
-
-Usa [morgantask_frontend/.env.local](morgantask_frontend/.env.local):
-
-```dotenv
-VITE_API_URL=http://localhost:4000/api
-```
-
-## Correr en desarrollo (local)
-
-```bash
-cd morgantask_backend
-npm run dev
-
-# en otra terminal
+# Frontend (en otra terminal)
 cd morgantask_frontend
+pnpm install
 pnpm run dev
 ```
 
-- Backend: http://localhost:4000
-- Frontend: http://localhost:5173
+---
 
-## Correr con Docker Compose
+## Producción (VPS Hostinger)
+
+### Levantar
 
 ```bash
-docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
-Servicios:
-- MongoDB: localhost:27019
-- Backend: localhost:4000
-- Frontend: localhost:5173
+App queda disponible en: `http://IP_DEL_VPS:80`
 
-# Pruebas Automatizadas
-
-## Objetivo
-
-Como parte del proceso de aseguramiento de la calidad del proyecto **MorganTask**, se implementaron pruebas automatizadas para validar funcionalidades críticas tanto en el backend como en el frontend, con el propósito de detectar errores tempranamente, mejorar la estabilidad del sistema y garantizar un comportamiento funcional correcto.
-
-Las herramientas utilizadas fueron:
-
-- **Jest** para pruebas unitarias del backend.
-- **Vitest + React Testing Library** para pruebas del frontend.
-
----
-
-# Backend Testing con Jest
-
-## Configuración de pruebas
-
-Para habilitar pruebas automatizadas en el backend se instalaron las siguientes dependencias:
+### Bajar
 
 ```bash
-npm install -D jest ts-jest @types/jest supertest @types/supertest mongodb-memory-server
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
 ```
 
-Además, se configuraron los siguientes archivos:
-
-- `jest.config.js`
-- `tsconfig.json`
-- carpeta `src/__tests__/`
-
-### Evidencia
-
-![Configuración inicial de Jest](screenshots_test/backend-jest-install.png)
-
-**Figura 1.** Instalación y configuración inicial de Jest para pruebas unitarias del backend.
+- Mantiene datos: `down`
+- Borra datos: `down -v`
 
 ---
 
-## Prueba inicial de validación
+## Archivos de entorno
 
-Se ejecutó una prueba básica inicial para verificar que el entorno de pruebas estuviera correctamente configurado.
+| Archivo | Propósito | Gitignored |
+|---|---|---|
+| `.env` | Credenciales MongoDB para Docker Compose | Sí |
+| `.env.development` | Vars para desarrollo Docker | Sí |
+| `.env.production` | Vars para producción VPS | Sí |
 
-Archivo creado:
-
-```text
-src/__tests__/basic.test.ts
-```
-
-Objetivo de la prueba:
-
-- validar ejecución correcta de Jest
-- verificar reconocimiento del entorno TypeScript
-- confirmar funcionamiento del sistema de aserciones
-
-### Evidencia
-
-![Prueba básica Jest](screenshots_test/backend-jest-install.png)
-
-**Figura 2.** Validación inicial del framework Jest funcionando correctamente.
+Los archivos `.env` dentro de `morgantask_backend/` y `morgantask_frontend/` ya no se usan — Docker los sobreescribe.
 
 ---
 
-## Corrección de error detectado en pruebas
+## Deploy en VPS — Pasos antes de subir
 
-Durante la construcción de las pruebas unitarias reales se detectó un error relacionado con el mock del repositorio de usuarios.
+1. **Editar `.env.production`** — el archivo ya tiene valores placeholder para el `JWT_SECRET`. Si querés cambiarlos:
 
-Problema detectado:
+   ```bash
+   # Generar nuevo JWT_SECRET
+   openssl rand -base64 48
 
-- la interfaz `IUserRepository` requería métodos adicionales no incluidos inicialmente
-- `findByIdPublic`
-- `findByEmailPublic`
+   # Editar manualmente .env.production
+   ```
 
-Esto generó fallo en la ejecución de la suite de pruebas.
+2. **Subir el proyecto a la VPS** (git clone o scp)
 
-### Evidencia
+3. **Ejecutar en la VPS**:
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+   ```
 
-![Error detectado en mock backend](screenshots_test/backend-mock-error.png)
+4. **Acceder**: `http://IP_DE_TU_VPS:80`
 
-**Figura 3.** Error detectado durante la simulación del repositorio de usuarios en backend.
+### Notas importantes para producción
 
----
-
-## Pruebas unitarias del módulo de autenticación
-
-Se desarrollaron pruebas unitarias reales para el caso de uso de autenticación.
-
-Archivo implementado:
-
-```text
-src/__tests__/AuthUseCases.test.ts
-```
-
-### Casos probados
-
-#### 1. Creación exitosa de cuenta
-
-Se validó:
-
-- usuario inexistente
-- creación correcta del usuario
-- cifrado de contraseña
-- almacenamiento en repositorio
-
-#### 2. Usuario ya registrado
-
-Se validó:
-
-- detección de usuario duplicado
-- lanzamiento de excepción controlada
-- bloqueo de creación
-
-#### 3. Inicio de sesión exitoso
-
-Se validó:
-
-- búsqueda del usuario
-- validación de contraseña
-- generación de token JWT
-
-### Evidencia parcial
-
-![Pruebas AuthUseCases](screenshots_test/backend-auth-tests.png)
-
-**Figura 4.** Ejecución parcial de pruebas unitarias del módulo de autenticación.
+- **MongoDB no está expuesto al host** — solo es accesible desde contenedores internos. Esto es por seguridad.
+- **Puerto único** — todo entra por el `:80` de nginx. El backend no tiene puerto expuesto.
+- **Datos persistentes** — el volumen `mongo_data` mantiene los datos entre despliegues. Para borrar todo: `down -v`.
+- **Logs** — ver logs de un contenedor:
+  ```bash
+  docker logs morgantask_backend
+  docker logs morgantask_frontend
+  docker logs morgantask_mongo
+  ```
 
 ---
 
-## Resultado final backend
+## Testing
 
-Resultado consolidado:
-
-- **2 suites ejecutadas**
-- **4 pruebas exitosas**
-- **0 errores**
-
-### Evidencia final
-
-![Resultado final backend](screenshots_test/backend-final-pass.png)
-
-**Figura 5.** Resultado exitoso de pruebas unitarias del backend con Jest.
-
----
-
-# Frontend Testing con Vitest
-
-## Configuración de pruebas
-
-Para implementar pruebas en frontend se instalaron las siguientes dependencias:
+### Backend (Jest)
 
 ```bash
-npm install -D vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+cd morgantask_backend
+pnpm run test
 ```
 
-Archivos configurados:
+### Frontend (Vitest)
 
-- `vite.config.ts`
-- `src/test/setup.ts`
-- `tsconfig.json`
-
-Estas configuraciones permitieron habilitar pruebas sobre componentes React con entorno DOM simulado.
-
----
-
-## Prueba del componente LoginView
-
-Archivo implementado:
-
-```text
-src/views/auth/LoginView.test.tsx
-```
-
-Validaciones realizadas:
-
-- renderizado correcto del formulario de inicio de sesión
-- visualización del campo email
-- visualización del campo contraseña
-- visualización del botón de inicio de sesión
-- visualización del enlace de registro
-
-### Evidencia
-
-![Prueba LoginView](screenshots_test/frontend-login-test.png)
-
-**Figura 6.** Ejecución exitosa de prueba del componente LoginView.
-
----
-
-## Prueba del componente RegisterView
-
-Archivo implementado:
-
-```text
-src/views/auth/RegisterView.test.tsx
-```
-
-Validaciones realizadas:
-
-- renderizado correcto del formulario de registro
-- visualización del campo email
-- visualización del campo nombre
-- visualización del campo contraseña
-- visualización del botón de registro
-
-
-
-
-
-
-## Resultado final frontend
-
-Resultado consolidado:
-
-- **4 archivos de prueba ejecutados**
-- **10 pruebas exitosas**
-- **0 errores**
-
-### Evidencia final
-
-![Resultado final frontend](screenshots_test/captura7.png)
-
-**Figura 7.** Resultado exitoso de pruebas del frontend con Vitest.
-
----
-
-# Resumen General
-
-## Resultados obtenidos
-
-### Backend
-
-Pruebas ejecutadas:
-
-- validación inicial de Jest
-- creación exitosa de cuenta
-- validación de usuario duplicado
-- inicio de sesión exitoso
-
-Total:
-
-```text
-4 pruebas backend
+```bash
+cd morgantask_frontend
+pnpm run test
 ```
 
 ---
 
-### Frontend
+## Arquitectura de archivos Docker
 
-Pruebas ejecutadas:
-
-- renderizado de LoginView
-- renderizado de RegisterView
-
-Total:
-
-```text
-2 pruebas frontend
 ```
-
----
-
-## Total global
-
-```text
-6 pruebas automatizadas exitosas
+docker/
+├── backend/Dockerfile       # Multi-stage: dev (nodemon) | builder | prod (node)
+├── frontend/Dockerfile      # Multi-stage: dev (vite) | builder | prod (nginx)
+└── nginx/
+    ├── nginx.conf           # Gzip, worker config
+    └── conf.d/default.conf  # SPA fallback + reverse proxy /api → backend:4000
 ```
-
----
-
-# Tecnologías utilizadas
-
-- Node.js
-- TypeScript
-- Jest
-- ts-jest
-- Supertest
-- Vitest
-- React Testing Library
-- React
-- Vite
-- MongoDB
-
----
-
-# Conclusión
-
-La incorporación de pruebas automatizadas fortaleció significativamente el proceso de aseguramiento de calidad del proyecto MorganTask.
-
-Las pruebas implementadas permitieron validar funcionalidades críticas del sistema, detectar errores durante el desarrollo, corregir configuraciones defectuosas y garantizar estabilidad funcional tanto en backend como frontend.
-
-El uso combinado de Jest y Vitest permitió establecer una base sólida para futuras pruebas, mantenimiento evolutivo y mejora continua del software.
