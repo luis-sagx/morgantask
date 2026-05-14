@@ -2,7 +2,7 @@ import { IProject } from '../../domain/entities/Project'
 import { IProjectRepository } from '../../domain/ports/IProjectRepository'
 
 export class ProjectUseCases {
-    constructor(private projectRepository: IProjectRepository) {}
+    constructor(private readonly projectRepository: IProjectRepository) {}
 
     async create(data: { projectName: string; clientName: string; description: string; manager: string }): Promise<IProject> {
         return this.projectRepository.create(data)

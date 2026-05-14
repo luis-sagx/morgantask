@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { verify } from 'jsonwebtoken'
 
 import UserModel, { IUserDoc } from '../../infrastructure/models/UserModel'
+import { getErrorMessage } from '../utils/error'
 
 declare global {
     namespace Express {
@@ -31,6 +32,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
             }
         }
     } catch (error) {
-        res.status(500).json({ error: 'Token No Válido' })
+        res.status(500).json({ error: getErrorMessage(error, 'Token No Válido') })
     }
 }

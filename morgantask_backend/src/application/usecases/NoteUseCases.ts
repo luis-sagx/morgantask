@@ -4,8 +4,8 @@ import { ITaskRepository } from '../../domain/ports/ITaskRepository'
 
 export class NoteUseCases {
     constructor(
-        private noteRepository: INoteRepository,
-        private taskRepository: ITaskRepository
+        private readonly noteRepository: INoteRepository,
+        private readonly taskRepository: ITaskRepository
     ) {}
 
     async create(data: { content: string; taskId: string; userId: string }): Promise<INote> {

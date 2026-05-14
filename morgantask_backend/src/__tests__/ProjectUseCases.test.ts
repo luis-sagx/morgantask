@@ -73,6 +73,7 @@ describe("ProjectUseCases", () => {
       clientName: "Cliente",
       description: "",
       manager: "user-1",
+      tasks: [],
       team: []
     };
     projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);
@@ -92,6 +93,7 @@ describe("ProjectUseCases", () => {
       clientName: "Cliente",
       description: "",
       manager: "user-1",
+      tasks: [],
       team: ["user-2", "user-3"]
     };
     projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);
@@ -118,6 +120,7 @@ describe("ProjectUseCases", () => {
       clientName: "Cliente",
       description: "",
       manager: "user-1",
+      tasks: [],
       team: ["user-2"]
     };
     projectRepositoryMock.findByIdWithTasks.mockResolvedValue(mockProject);

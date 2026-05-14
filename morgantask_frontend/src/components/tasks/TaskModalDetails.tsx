@@ -16,7 +16,7 @@ export default function TaskModalDetails() {
     const queryParams = new URLSearchParams(location.search)
     const taskId = queryParams.get('viewTask')!
 
-    const show = taskId ? true : false
+    const show = Boolean(taskId)
 
     const { data, isError, error } = useQuery({
         queryKey: ['task', taskId],
@@ -31,68 +31,66 @@ export default function TaskModalDetails() {
     }
 
     if (data) return (
-        <>
-            <Transition appear show={show} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={() => navigate(location.pathname, { replace: true })}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-black/60" />
-                    </Transition.Child>
+        <Transition appear show={show} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={() => navigate(location.pathname, { replace: true })}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/60" />
+                </Transition.Child>
 
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4 text-center">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all p-16">
-                                    <p className='text-sm text-slate-400'>Agregada el: {formatDate(data.createdAt)} </p>
-                                    <p className='text-sm text-slate-400'>Última actualización: {formatDate(data.updatedAt)} </p>
+                <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all p-16">
+                                <p className='text-sm text-slate-400'>Agregada el: {formatDate(data.createdAt)} </p>
+                                <p className='text-sm text-slate-400'>Última actualización: {formatDate(data.updatedAt)} </p>
 
-                                    <Dialog.Title
-                                        as="h3"
-                                        className="font-bold text-2xl text-slate-600 my-4"
-                                    >{data.name} </Dialog.Title>
+                                <Dialog.Title
+                                    as="h3"
+                                    className="font-bold text-2xl text-slate-600 my-4"
+                                >{data.name} </Dialog.Title>
 
-                                    <p className='text-base text-slate-500 mb-2'>Descripción: {data.description}</p>
+                                <p className='text-base text-slate-500 mb-2'>Descripción: {data.description}</p>
 
-                                    {data.completedBy.length ? (
-                                        <>
-                                            <p className='font-bold text-lg text-slate-600 my-4'>Historial de Cambios</p>
+                                {data.completedBy.length ? (
+                                    <>
+                                        <p className='font-bold text-lg text-slate-600 my-4'>Historial de Cambios</p>
 
-                                            <ul className=' list-decimal'>
-                                                {data.completedBy.map((activityLog) => (
-                                                    <li key={activityLog._id}>
-                                                        <span className='font-bold text-slate-600'>
-                                                            {statusTranslations[activityLog.status]}
-                                                        </span>{' '} por: {activityLog.user.name}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </>
-                                    ) : null}
+                                        <ul className=' list-decimal'>
+                                            {data.completedBy.map((activityLog) => (
+                                                <li key={activityLog._id}>
+                                                    <span className='font-bold text-slate-600'>
+                                                        {statusTranslations[activityLog.status]}
+                                                    </span>{' '} por: {activityLog.user.name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                ) : null}
 
-                                    <NotesPanel
-                                        notes={data.notes}
-                                    />
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+                                <NotesPanel
+                                    notes={data.notes}
+                                />
+                            </Dialog.Panel>
+                        </Transition.Child>
                     </div>
-                </Dialog>
-            </Transition>
-        </>
+                </div>
+            </Dialog>
+        </Transition>
     )
 }
