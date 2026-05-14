@@ -5,8 +5,8 @@ import { projectUseCases } from '../../infrastructure/container'
 export class ProjectController {
     static createProject = async (req: Request, res: Response) => {
         try {
-            await projectUseCases.create({ ...req.body, manager: req.user.id.toString() })
-            res.send('Proyecto Creando Correctamente')
+            const project = await projectUseCases.create({ ...req.body, manager: req.user.id.toString() })
+            res.json(project)
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
         }
@@ -14,7 +14,9 @@ export class ProjectController {
 
     static getAllProjects = async (req: Request, res: Response) => {
         try {
-            const projects = await projectUseCases.getAll(req.user.id.toString())
+            const limit = Math.min(parseInt(req.query.limit as string) || 20, 100)
+            const skip  = parseInt(req.query.skip as string)  || 0
+            const projects = await projectUseCases.getAll(req.user.id.toString(), limit, skip)
             res.json(projects)
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })

@@ -22,13 +22,13 @@ export class MongoProjectRepository implements IProjectRepository {
         return this.toEntity(project)
     }
 
-    async findByUser(userId: string): Promise<IProject[]> {
+    async findByUser(userId: string, limit = 20, skip = 0): Promise<IProject[]> {
         const projects = await ProjectModel.find({
             $or: [
                 { manager: { $in: userId } },
                 { team: { $in: userId } }
             ]
-        })
+        }).limit(limit).skip(skip).sort({ _id: -1 })
         return projects.map(p => this.toEntity(p))
     }
 

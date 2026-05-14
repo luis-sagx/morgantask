@@ -3,7 +3,7 @@ import { IPublicUser } from '../entities/User'
 
 export interface IProjectRepository {
     create(data: Omit<IProject, '_id' | 'tasks' | 'team'>): Promise<IProject>
-    findByUser(userId: string): Promise<IProject[]>
+    findByUser(userId: string, limit?: number, skip?: number): Promise<IProject[]>
     findById(id: string): Promise<IProject | null>
     findByIdWithTasks(id: string): Promise<IProject | null>
     update(id: string, data: Pick<IProject, 'projectName' | 'clientName' | 'description'>): Promise<void>

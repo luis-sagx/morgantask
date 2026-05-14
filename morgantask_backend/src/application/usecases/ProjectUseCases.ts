@@ -8,8 +8,8 @@ export class ProjectUseCases {
         return this.projectRepository.create(data)
     }
 
-    async getAll(userId: string): Promise<IProject[]> {
-        return this.projectRepository.findByUser(userId)
+    async getAll(userId: string, limit = 20, skip = 0): Promise<IProject[]> {
+        return this.projectRepository.findByUser(userId, limit, skip)
     }
 
     async getById(projectId: string, userId: string): Promise<IProject> {

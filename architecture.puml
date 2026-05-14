@@ -1,0 +1,157 @@
+@startuml MorgantTask_Arquitectura
+
+skinparam linetype ortho
+skinparam defaultFontSize 11
+skinparam ArrowColor #444444
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+skinparam package {
+  BackgroundColor #FAFAFA
+  BorderColor #888888
+}
+
+title MorgantTask -- Arquitectura Dev & Produccion\nClean Architecture + Modelo McCall + PDCA
+
+'══════════════════════════════════════════
+' DEVELOPER MACHINE
+'══════════════════════════════════════════
+package "DEVELOPER MACHINE" as DevMachine #E8F4FD {
+  component "VS Code / IDE" as IDE
+  component "k6 Load Tests" as K6
+  component "Jest Unit Tests" as JEST
+}
+
+'══════════════════════════════════════════
+' ENTORNO DESARROLLO
+'══════════════════════════════════════════
+package "ENTORNO DESARROLLO  (docker-compose.dev.yml)" as DevEnv #EBF5FB {
+
+  package "Frontend Container  :5173" as FEDev #CCE5FF {
+    component "Vite Dev Server" as ViteDev
+    component "React + TypeScript" as ReactApp
+  }
+
+  package "Backend Container  :4000" as BEDev #CCE5FF {
+    component "ts-node --api" as TsNode
+
+    package "Clean Architecture" as CleanArch #DDEEFF {
+      component "[Interfaces]\nControllers / Routes" as Ctrl
+      component "[Application]\nUse Cases" as UC
+      component "[Domain]\nEntities + Ports" as Domain
+      component "[Infrastructure]\nRepositories + DB" as Repo
+    }
+  }
+
+  package "MongoDB Container  :27019" as MongoDev #CCE5FF {
+    database "morgantask_mern\n(dev)" as DBDev
+  }
+}
+
+'══════════════════════════════════════════
+' ENTORNO PRODUCCION
+'══════════════════════════════════════════
+package "ENTORNO PRODUCCION  (docker-compose.prod.yml)" as ProdEnv #FDF4E8 {
+
+  package "Nginx Container  :80 / :443" as NginxPkg #FFE4B5 {
+    component "Reverse Proxy + SSL" as Nginx
+    component "Static Files (React build)" as StaticFiles
+  }
+
+  package "Backend Container  :4000 interno" as BEProd #FFE4B5 {
+    component "node dist/index.js" as NodeProd
+    component "Express API REST" as ExpressAPI
+  }
+
+  package "MongoDB Container  :27017 interno" as MongoProdPkg #FFE4B5 {
+    database "morgantask_mern\n(prod)" as DBProd
+    component "mongo-init.js" as MongoInit
+  }
+
+  package "Volumenes Persistentes" as Vols #FFF5E0 {
+    storage "mongo_data_prod" as VolMongo
+    storage "nginx_certs (SSL)" as VolSSL
+  }
+}
+
+'══════════════════════════════════════════
+' CI/CD PIPELINE
+'══════════════════════════════════════════
+package "CI/CD PIPELINE  (GitHub Actions)" as CICD #F0FFF0 {
+  component "1. Build & Test\n(pnpm test + Jest)" as CIBuild
+  component "2. k6 Load Test\n(Efficiency p95 < 200ms)" as CIK6
+  component "3. Quality Gate\n(SonarQube / McCall Score)" as CIQuality
+  component "4. Docker Build\n(imagen inmutable)" as CIDocker
+  component "5. Deploy\n(docker compose up prod)" as CIDeploy
+}
+
+'══════════════════════════════════════════
+' RELACIONES - DEV
+'══════════════════════════════════════════
+IDE --> ViteDev   : edita frontend
+IDE --> TsNode    : edita backend
+ViteDev --> ReactApp
+ReactApp --> TsNode : HTTP /api/*
+TsNode --> Ctrl
+Ctrl --> UC
+UC --> Domain
+UC --> Repo
+Repo --> DBDev
+K6 --> TsNode   : load test
+JEST --> UC     : unit tests (mocks)
+
+'══════════════════════════════════════════
+' RELACIONES - PROD
+'══════════════════════════════════════════
+Nginx --> StaticFiles : GET /
+Nginx --> ExpressAPI  : proxy /api/*
+NodeProd --> ExpressAPI
+ExpressAPI --> DBProd
+DBProd --> VolMongo
+MongoInit --> DBProd
+Nginx --> VolSSL
+
+'══════════════════════════════════════════
+' RELACIONES - CI/CD
+'══════════════════════════════════════════
+CIBuild --> CIK6
+CIK6 --> CIQuality
+CIQuality --> CIDocker
+CIDocker --> CIDeploy
+
+'══════════════════════════════════════════
+' NOTAS McCall
+'══════════════════════════════════════════
+note right of Domain
+  McCall: **Correctness**
+  Reglas de negocio puras
+  Sin dependencias externas
+end note
+
+note right of UC
+  McCall: **Reusability**
+  Independiente del framework
+end note
+
+note right of Repo
+  McCall: **Portability**
+  MongoDB via interfaces
+end note
+
+note right of Nginx
+  McCall: **Integrity**
+  HTTPS + JWT + Rate Limit
+end note
+
+note bottom of CIK6
+  McCall: **Efficiency**
+  p95 < 200ms por deploy
+end note
+
+note bottom of JEST
+  McCall: **Testability**
+  Coverage > 85%
+end note
+
+@enduml

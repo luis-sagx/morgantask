@@ -6,11 +6,11 @@ import { taskUseCases } from '../../infrastructure/container'
 export class TaskController {
     static createTask = async (req: Request, res: Response) => {
         try {
-            await taskUseCases.create({
+            const task = await taskUseCases.create({
                 ...req.body,
                 projectId: req.project.id.toString()
             })
-            res.send('Tarea creada correctamente')
+            res.json(task)
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
         }
