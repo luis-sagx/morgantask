@@ -9,7 +9,7 @@ type SearchResultProps = {
     reset: () => void
 }
 
-export default function SearchResult({ user, reset }: SearchResultProps) {
+export default function SearchResult({ user, reset }: Readonly<SearchResultProps>) {
 
     const navigate = useNavigate()
     const params = useParams()

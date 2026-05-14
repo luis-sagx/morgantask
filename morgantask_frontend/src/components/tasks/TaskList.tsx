@@ -33,7 +33,7 @@ const statusStyles: { [key: string]: string } = {
     completed: 'bg-emerald-300 text-emerald-700',
 }
 
-export default function TaskList({ tasks, canEdit }: TaskListProps) {
+export default function TaskList({ tasks, canEdit }: Readonly<TaskListProps>) {
 
     const params = useParams()
     const projectId = params.projectId!
@@ -50,15 +50,14 @@ export default function TaskList({ tasks, canEdit }: TaskListProps) {
     })
 
     const groupedTasks = tasks.reduce((acc, task) => {
-        let currentGroup = acc[task.status] ? [...acc[task.status]] : [];
-        currentGroup = [...currentGroup, task]
-        return { ...acc, [task.status]: currentGroup };
+        const currentGroup = acc[task.status] ?? []
+        return { ...acc, [task.status]: [...currentGroup, task] };
     }, initialStatusGroups);
 
     const handleDragEnd = (e: DragEndEvent) => {
         const { over, active } = e
 
-        if (over && over.id) {
+        if (over?.id) {
             const taskId = active.id.toString()
             const status = over.id as TaskStatus
             mutate({ projectId, taskId, status })

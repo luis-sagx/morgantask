@@ -4,8 +4,8 @@ import { ITaskRepository } from '../../domain/ports/ITaskRepository'
 
 export class TaskUseCases {
     constructor(
-        private taskRepository: ITaskRepository,
-        private projectRepository: IProjectRepository
+        private readonly taskRepository: ITaskRepository,
+        private readonly projectRepository: IProjectRepository
     ) {}
 
     async create(data: { name: string; description: string; projectId: string }): Promise<ITask> {

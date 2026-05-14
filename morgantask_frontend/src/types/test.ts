@@ -1,7 +1,5 @@
-import type { UseQueryResult } from '@tanstack/react-query'
-import type { UseMutationResult } from '@tanstack/react-query'
-import type { User } from './index'
-import type { Task, TaskStatus } from './index'
+import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query'
+import type { Task, TaskStatus, User } from './index'
 
 // Tipos para mocks de useAuth
 export type UseAuthMock = Pick<UseQueryResult<User>, 'data' | 'isError' | 'isPending'>

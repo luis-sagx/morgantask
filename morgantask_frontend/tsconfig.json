@@ -6,8 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "types": ["vitest/globals"],
-    "ignoreDeprecations": "6.0",
-    "baseUrl": "src", 
+    "baseUrl": "src",
     "paths" : {
       "@/components/*" : ["components/*"],
       "@/views/*" : ["views/*"],

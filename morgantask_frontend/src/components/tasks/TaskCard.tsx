@@ -13,7 +13,7 @@ type TaskCardProps = {
     canEdit: boolean
 }
 
-export default function TaskCard({ task, canEdit }: TaskCardProps) {
+export default function TaskCard({ task, canEdit }: Readonly<TaskCardProps>) {
 
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: task._id

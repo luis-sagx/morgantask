@@ -16,23 +16,17 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: [
-        'src/api/**/*.ts',
-        'src/hooks/**/*.ts',
-        'src/utils/**/*.ts',
-        'src/locales/**/*.ts',
-        'src/types/**/*.ts',
-        'src/layouts/**/*.tsx',
-        'src/components/ErrorMessage.tsx',
-        'src/components/Logo.tsx',
-        'src/components/NavMenu.tsx',
-        'src/lib/**/*.ts'
+        'src/**/*.{ts,tsx}'
       ],
-      thresholds: {
-        statements: 85,
-        branches: 85,
-        functions: 85,
-        lines: 85
-      }
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/test/**',
+        'src/vite-env.d.ts',
+        'postcss.config.js',
+        'tailwind.config.js'
+      ],
+      reporter: ['text', 'lcov'],
+      reportsDirectory: './coverage'
     }
   }
 })

@@ -8,7 +8,12 @@ import type { TeamMember } from '@/types'
 
 vi.mock('@/api/TeamAPI')
 vi.mock('./SearchResult', () => ({
-  default: ({ user }: { user: TeamMember }) => <div>SearchResult - {user.name}</div>
+  default: ({ user, reset }: { user: TeamMember; reset: () => void }) => (
+    <div>
+      <div>SearchResult - {user.name}</div>
+      <button type="button" onClick={reset}>Reset Search</button>
+    </div>
+  )
 }))
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
@@ -93,13 +98,40 @@ describe('AddMemberForm', () => {
     })
   })
 
-  it('debe mostrar cargando mientras busca el usuario', () => {
+  it('debe limpiar la búsqueda cuando se resetea el resultado', async () => {
+    const mockUser: TeamMember = {
+      _id: 'user123',
+      name: 'John Doe',
+      email: 'john@test.com'
+    }
+    vi.mocked(findUserByEmail).mockResolvedValue(mockUser)
+
+    render(<AddMemberForm />, { wrapper: createWrapper() })
+    const emailInput = screen.getByPlaceholderText('E-mail del usuario a Agregar') as HTMLInputElement
+    fireEvent.change(emailInput, { target: { value: 'john@test.com' } })
+    fireEvent.click(screen.getByDisplayValue('Buscar Usuario'))
+
+    await waitFor(() => {
+      expect(screen.getByText('SearchResult - John Doe')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByText('Reset Search'))
+
+    await waitFor(() => {
+      expect(emailInput).toHaveValue('')
+    })
+  })
+
+  it('debe mostrar cargando mientras busca el usuario', async () => {
     vi.mocked(findUserByEmail).mockImplementation(() => new Promise(() => {}))
-    const { rerender } = render(<AddMemberForm />, { wrapper: createWrapper() })
+    render(<AddMemberForm />, { wrapper: createWrapper() })
     const emailInput = screen.getByPlaceholderText('E-mail del usuario a Agregar')
     fireEvent.change(emailInput, { target: { value: 'john@test.com' } })
     const submitButton = screen.getByDisplayValue('Buscar Usuario')
     fireEvent.click(submitButton)
-    rerender(<AddMemberForm />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Cargando...')).toBeInTheDocument()
+    })
   })
 })

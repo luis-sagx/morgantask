@@ -7,7 +7,7 @@ type ProjectFormProps = {
     errors: FieldErrors<ProjectFormData>
 }
 
-export default function ProjectForm({errors, register} : ProjectFormProps) {
+export default function ProjectForm({errors, register} : Readonly<ProjectFormProps>) {
     return (
         <>
             <div className="mb-5 space-y-3">

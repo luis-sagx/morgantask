@@ -12,7 +12,7 @@ type NoteDetailProps = {
     note: Note
 }
 
-export default function NoteDetail({ note }: NoteDetailProps) {
+export default function NoteDetail({ note }: Readonly<NoteDetailProps>) {
 
     const { data, isLoading } = useAuth()
     const canDelete = useMemo(() => data?._id === note.createdBy._id, [data, note.createdBy._id])

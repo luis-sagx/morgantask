@@ -9,7 +9,7 @@ type NavMenuProps = {
   name: User['name']
 }
 
-export default function NavMenu({name} : NavMenuProps) {
+export default function NavMenu({name} : Readonly<NavMenuProps>) {
 
   const queryClient = useQueryClient()
   const logout = () => {

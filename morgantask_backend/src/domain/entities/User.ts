@@ -6,8 +6,4 @@ export interface IUser {
     confirmed: boolean
 }
 
-export interface IPublicUser {
-    _id: string
-    email: string
-    name: string
-}
+export type IPublicUser = Pick<Required<IUser>, '_id' | 'email' | 'name'>

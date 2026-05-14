@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 
 import TaskModel, { ITaskDoc } from '../../infrastructure/models/TaskModel'
+import { getErrorMessage } from '../utils/error'
 
 declare global {
     namespace Express {
@@ -20,7 +21,7 @@ export async function taskExists(req: Request, res: Response, next: NextFunction
         req.task = task
         next()
     } catch (error) {
-        res.status(500).json({ error: 'Hubo un error' })
+        res.status(500).json({ error: getErrorMessage(error) })
     }
 }
 

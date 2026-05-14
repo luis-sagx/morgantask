@@ -13,7 +13,7 @@ type EditTaskModalProps = {
     taskId: Task['_id']
 }
 
-export default function EditTaskModal({data, taskId} : EditTaskModalProps) {
+export default function EditTaskModal({data, taskId} : Readonly<EditTaskModalProps>) {
     const navigate = useNavigate()
 
     /** Obtener projectId */

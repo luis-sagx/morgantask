@@ -3,7 +3,7 @@ import { hashPassword, checkPassword } from '../../infrastructure/security/bcryp
 import { generateJWT } from '../../infrastructure/security/jwt'
 
 export class AuthUseCases {
-    constructor(private userRepository: IUserRepository) {}
+    constructor(private readonly userRepository: IUserRepository) {}
 
     async createAccount(data: { email: string; password: string; name: string }): Promise<void> {
         const exists = await this.userRepository.findByEmail(data.email)

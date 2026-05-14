@@ -7,7 +7,7 @@ type TaskFormProps = {
     register: UseFormRegister<TaskFormData>
 }
 
-export default function TaskForm({errors, register} : TaskFormProps) {
+export default function TaskForm({errors, register} : Readonly<TaskFormProps>) {
     return (
         <>
             <div className="flex flex-col gap-5">

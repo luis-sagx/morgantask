@@ -1,33 +1,49 @@
 import { useAuth } from '@/hooks/useAuth'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { beforeEach, vi } from 'vitest'
 import NoteDetail from './NoteDetail'
 
 vi.mock('@/hooks/useAuth')
 vi.mock('@/api/NoteAPI')
-vi.mock('react-toastify')
+vi.mock('@tanstack/react-query', async () => {
+  const actual = await vi.importActual<typeof import('@tanstack/react-query')>('@tanstack/react-query')
+  return {
+    ...actual,
+    useMutation: vi.fn(),
+    useQueryClient: vi.fn()
+  }
+})
+vi.mock('react-toastify', () => ({
+  toast: {
+    error: vi.fn(),
+    success: vi.fn()
+  }
+}))
 
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false }
-    }
-  })
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={['/projects/proj123?viewTask=task123']}>
-        {children}
-      </MemoryRouter>
-    </QueryClientProvider>
-  )
-}
+const createWrapper = () => ({ children }: { children: React.ReactNode }) => (
+  <MemoryRouter initialEntries={['/projects/proj123?viewTask=task123']}>
+    <Routes>
+      <Route path="/projects/:projectId" element={children} />
+    </Routes>
+  </MemoryRouter>
+)
 
 describe('NoteDetail', () => {
+  const mutate = vi.fn()
+  const invalidateQueries = vi.fn()
+  let mutationOptions: any[] = []
+
   beforeEach(() => {
     vi.clearAllMocks()
+    mutationOptions = []
+    vi.mocked(useMutation).mockImplementation((options: any) => {
+      mutationOptions.push(options)
+      return { mutate } as any
+    })
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries } as any)
   })
 
   const mockNote = {
@@ -110,5 +126,24 @@ describe('NoteDetail', () => {
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     const deleteButton = screen.getByText('Eliminar')
     expect(deleteButton).toBeInTheDocument()
+  })
+
+  it('debe eliminar la nota e invalidar la tarea en éxito', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      data: { _id: 'user123', name: 'John Doe', email: 'john@test.com' },
+      isLoading: false,
+      isError: false,
+      error: null
+    } as any)
+
+    render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
+    fireEvent.click(screen.getByText('Eliminar'))
+
+    expect(mutate).toHaveBeenCalledWith({ projectId: 'proj123', taskId: 'task123', noteId: 'note123' })
+
+    mutationOptions[0].onSuccess('Nota eliminada')
+
+    expect(toast.success).toHaveBeenCalledWith('Nota eliminada')
+    expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['task', 'task123'] })
   })
 })
