@@ -34,7 +34,10 @@ jobs:
           port: ${{ env.VPS_SSH_PORT }}
           script: |
             set -eu
-            APP_PATH="${{ env.VPS_DEPLOY_PATH }}"
+            APP_PATH="$(printf '%s' "${{ env.VPS_DEPLOY_PATH }}" | tr -d '\r\n')"
+
+            echo "Deploy path: $APP_PATH"
+            ls -la "$APP_PATH" || true
 
             if [ ! -d "$APP_PATH/.git" ]; then
               echo "No git repository found at $APP_PATH"
