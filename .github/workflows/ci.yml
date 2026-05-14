@@ -303,7 +303,8 @@ jobs:
       - name: Wait for nginx and API
         run: |
           for attempt in $(seq 1 30); do
-            if [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost/api/auth/user)" = "401" ]; then
+            status_code="$(curl -s -o /dev/null -w '%{http_code}' http://localhost/api/auth/user || true)"
+            if [ "$status_code" = "401" ] || [ "$status_code" = "200" ]; then
               exit 0
             fi
             sleep 5

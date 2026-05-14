@@ -4,8 +4,11 @@ export const corsConfig: CorsOptions = {
     origin: function (origin, callback) {
         const whitelist = [process.env.FRONTEND_URL]
 
-        if (process.argv[2] === '--api') {
-            whitelist.push(undefined)
+        // Allow requests without an Origin header, such as server-to-server checks,
+        // Docker health probes, and CI readiness checks.
+        if (!origin) {
+            callback(null, true)
+            return
         }
 
         if (whitelist.includes(origin)) {
