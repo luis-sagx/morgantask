@@ -1,24 +1,11 @@
-# Dependencies
-node_modules/
-**/node_modules/
-
-# Package manager stores
-.pnpm-store/
-**/.pnpm-store/
-
-# Build outputs
-dist/
-**/dist/
-dist-ssr/
-coverage/
-.turbo/
-.cache/
-.vite/
-*.tsbuildinfo
-
-# Environment files
 .env
+.env.development
+.env.production
 **/.env
+
+.scannerwork/
+.pnpm-store/
+coverage/
 
 # Logs
 logs/
