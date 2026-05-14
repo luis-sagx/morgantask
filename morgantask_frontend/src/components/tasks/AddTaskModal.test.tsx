@@ -15,8 +15,8 @@ describe('AddTaskModal', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries })
-    vi.mocked(useMutation).mockReturnValue({ mutate })
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries } as any)
+    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
   })
 
   const renderWithRoute = (url: string) =>

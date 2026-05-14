@@ -4,14 +4,14 @@ import type { User } from './index'
 import type { Task, TaskStatus } from './index'
 
 // Tipos para mocks de useAuth
-export type UseAuthMock = Pick<UseQueryResult<User>, 'data' | 'isError' | 'isLoading'>
+export type UseAuthMock = Pick<UseQueryResult<User>, 'data' | 'isError' | 'isPending'>
 
 // Tipos para mocks de useQuery
-export type UseQueryMock<T> = Pick<UseQueryResult<T>, 'data' | 'isError' | 'isLoading' | 'error'>
+export type UseQueryMock<T> = Pick<UseQueryResult<T>, 'data' | 'isError' | 'isPending' | 'error'>
 
 // Tipos para mocks de useMutation
 export type UseMutationMock<TData = unknown, TError = unknown, TVariables = void> =
-  Pick<UseMutationResult<TData, TError, TVariables>, 'mutate' | 'isLoading'>
+  Pick<UseMutationResult<TData, TError, TVariables>, 'mutate' | 'isPending'>
 
 // Tipos para mock de useQueryClient
 export type UseQueryClientMock = {

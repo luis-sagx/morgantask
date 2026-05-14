@@ -36,9 +36,11 @@ describe('DeleteProjectModal', () => {
     expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument()
   })
 
-  it('debe mostrar el campo de contraseña', () => {
+  it('debe mostrar el campo de contraseña', async () => {
     render(<DeleteProjectModal />, { wrapper: createWrapper() })
-    expect(screen.getByLabelText('Password')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByLabelText('Password')).toBeInTheDocument()
+    })
   })
 
   it('debe mostrar mensaje de error si la contraseña está vacía', async () => {
@@ -50,13 +52,17 @@ describe('DeleteProjectModal', () => {
     })
   })
 
-  it('debe renderizar el título correcto', () => {
+  it('debe renderizar el título correcto', async () => {
     render(<DeleteProjectModal />, { wrapper: createWrapper() })
-    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Eliminar Proyecto')
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Eliminar Proyecto')
+    })
   })
 
-  it('debe renderizar el mensaje de confirmación', () => {
+  it('debe renderizar el mensaje de confirmación', async () => {
     render(<DeleteProjectModal />, { wrapper: createWrapper() })
-    expect(screen.getByText(/Confirma la eliminación del proyecto/)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText(/Confirma la eliminación del proyecto/)).toBeInTheDocument()
+    })
   })
 })

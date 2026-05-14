@@ -1,6 +1,6 @@
 import { getTaskById } from '@/api/TaskAPI'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import EditTaskData from './EditTaskData'
@@ -56,10 +56,9 @@ describe('EditTaskData', () => {
 
     render(<EditTaskData />, { wrapper: createWrapper() })
 
-    // Esperar a que el query se resuelva
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(screen.getByText('EditTaskModal - task123')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('EditTaskModal - task123')).toBeInTheDocument()
+    })
   })
 
   it('debe llamar a getTaskById con los parámetros correctos', async () => {
@@ -79,12 +78,11 @@ describe('EditTaskData', () => {
 
     render(<EditTaskData />, { wrapper: createWrapper() })
 
-    // Esperar a que el query se resuelva
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    expect(getTaskById).toHaveBeenCalledWith({
-      projectId: 'proj123',
-      taskId: 'task123'
+    await waitFor(() => {
+      expect(getTaskById).toHaveBeenCalledWith({
+        projectId: 'proj123',
+        taskId: 'task123'
+      })
     })
   })
 })

@@ -13,6 +13,7 @@
       "@/views/*" : ["views/*"],
       "@/layouts/*" : ["layouts/*"],
       "@/api/*" : ["api/*"],
+      "@/types" : ["types/index"],
       "@/types/*" : ["types/*"],
       "@/lib/*" : ["lib/*"],
       "@/utils/*" : ["utils/*"],

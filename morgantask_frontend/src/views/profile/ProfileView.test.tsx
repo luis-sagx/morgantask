@@ -37,7 +37,7 @@ describe('ProfileView', () => {
       data: undefined,
       isLoading: true,
       isError: false
-    })
+    } as any)
 
     render(<ProfileView />, { wrapper: createWrapper() })
     expect(screen.getByText('Cargando...')).toBeInTheDocument()
@@ -49,7 +49,7 @@ describe('ProfileView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     render(<ProfileView />, { wrapper: createWrapper() })
 
@@ -64,7 +64,7 @@ describe('ProfileView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     render(<ProfileView />, { wrapper: createWrapper() })
 

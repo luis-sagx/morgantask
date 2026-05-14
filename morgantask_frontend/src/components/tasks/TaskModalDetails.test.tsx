@@ -32,7 +32,7 @@ describe('TaskModalDetails', () => {
       isError: true,
       error: { message: 'Error' },
       data: undefined
-    })
+    } as any)
 
     renderView()
     expect(window.location.pathname).toContain('/')
@@ -56,7 +56,7 @@ describe('TaskModalDetails', () => {
     vi.mocked(useQuery).mockReturnValue({
       isError: false,
       data: taskData
-    })
+    } as any)
 
     renderView()
     expect(screen.getByText('Tarea X')).toBeInTheDocument()

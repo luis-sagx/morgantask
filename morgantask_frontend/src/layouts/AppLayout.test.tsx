@@ -16,7 +16,7 @@ describe('AppLayout', () => {
       data: undefined,
       isLoading: true,
       isError: false
-    })
+    } as any)
     render(<AppLayout />)
     expect(screen.getByText('Cargando...')).toBeInTheDocument()
   })
@@ -26,7 +26,7 @@ describe('AppLayout', () => {
       data: undefined,
       isLoading: false,
       isError: true
-    })
+    } as any)
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>
@@ -46,7 +46,7 @@ describe('AppLayout', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>

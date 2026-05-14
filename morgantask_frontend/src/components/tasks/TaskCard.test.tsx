@@ -1,7 +1,7 @@
 import { deleteTask } from '@/api/TaskAPI'
 import { DndContext } from '@dnd-kit/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import TaskCard from './TaskCard'
@@ -68,15 +68,17 @@ describe('TaskCard', () => {
     expect(screen.getByText('Ver Tarea')).toBeInTheDocument()
   })
 
-  it('debe mostrar opciones de edición si canEdit es true', () => {
+  it('debe mostrar opciones de edición si canEdit es true', async () => {
     render(<TaskCard task={mockTask} canEdit={true} />, { wrapper: createWrapper() })
     const menuButton = screen.getByRole('button', { name: /opciones/i })
     fireEvent.click(menuButton)
-    expect(screen.getByText('Editar Tarea')).toBeInTheDocument()
-    expect(screen.getByText('Eliminar Tarea')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Editar Tarea')).toBeInTheDocument()
+      expect(screen.getByText('Eliminar Tarea')).toBeInTheDocument()
+    })
   })
 
-  it('no debe mostrar opciones de edición si canEdit es false', () => {
+  it('no debe mostrar opciones de edición si canEdit es false', async () => {
     render(<TaskCard task={mockTask} canEdit={false} />, { wrapper: createWrapper() })
     const menuButton = screen.getByRole('button', { name: /opciones/i })
     fireEvent.click(menuButton)

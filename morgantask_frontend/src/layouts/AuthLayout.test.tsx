@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Outlet } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 import AuthLayout from './AuthLayout'
 
 // Mock de Logo
@@ -34,12 +34,9 @@ describe('AuthLayout', () => {
   it('debe renderizar el Outlet', () => {
     render(
       <MemoryRouter>
-        <AuthLayout>
-          <Outlet />
-        </AuthLayout>
+        <AuthLayout />
       </MemoryRouter>
     )
-    // El outlet debe renderizarse
     expect(document.querySelector('.min-h-screen')).toBeInTheDocument()
   })
 

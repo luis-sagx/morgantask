@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import TaskForm from './TaskForm'
 import type { TaskFormData, FieldErrors } from '@/types'
 
-const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+type RenderProp = (errors: FieldErrors<TaskFormData>, register: ReturnType<typeof useForm<TaskFormData>>['register']) => React.ReactNode
+const TestWrapper = ({ children }: { children: RenderProp }) => {
   const { register, formState: { errors } } = useForm<TaskFormData>()
   return <>{children(errors as FieldErrors<TaskFormData>, register)}</>
 }

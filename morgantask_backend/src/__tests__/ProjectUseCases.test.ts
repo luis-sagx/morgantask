@@ -62,7 +62,7 @@ describe("ProjectUseCases", () => {
 
     const result = await projectUseCases.getAll("user-1");
 
-    expect(projectRepositoryMock.findByUser).toHaveBeenCalledWith("user-1");
+    expect(projectRepositoryMock.findByUser).toHaveBeenCalledWith("user-1", 20, 0);
     expect(result).toEqual(mockProjects);
   });
 

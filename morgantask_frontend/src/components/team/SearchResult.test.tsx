@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, vi } from 'vitest'
 import SearchResult from './SearchResult'
@@ -52,11 +52,13 @@ describe('SearchResult', () => {
     expect(screen.getByText('Agregar al Proyecto')).toBeInTheDocument()
   })
 
-  it('debe permitir hacer click en el botón agregar', () => {
+  it('debe permitir hacer click en el botón agregar', async () => {
     render(<SearchResult user={mockUser} reset={mockReset} />, { wrapper: createWrapper() })
     const addButton = screen.getByText('Agregar al Proyecto')
     fireEvent.click(addButton)
-    expect(addButton).toBeInTheDocument()
+    await waitFor(() => {
+      expect(addButton).toBeInTheDocument()
+    })
   })
 
 })

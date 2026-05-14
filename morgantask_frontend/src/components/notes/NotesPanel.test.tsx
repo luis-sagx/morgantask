@@ -49,7 +49,7 @@ describe('NotesPanel', () => {
         content: 'Note 1',
         createdBy: { _id: 'user1', name: 'User 1', email: 'user1@test.com' },
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        
         task: 'task1'
       },
       {
@@ -57,7 +57,7 @@ describe('NotesPanel', () => {
         content: 'Note 2',
         createdBy: { _id: 'user2', name: 'User 2', email: 'user2@test.com' },
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        
         task: 'task1'
       }
     ]
@@ -75,7 +75,7 @@ describe('NotesPanel', () => {
         content: 'Single Note',
         createdBy: { _id: 'user1', name: 'User 1', email: 'user1@test.com' },
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        
         task: 'task1'
       }
     ]

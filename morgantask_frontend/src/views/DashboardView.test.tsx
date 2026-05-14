@@ -39,7 +39,7 @@ describe('DashboardView', () => {
       data: undefined,
       isLoading: true,
       isError: false
-    })
+    } as any)
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -53,7 +53,7 @@ describe('DashboardView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -70,7 +70,7 @@ describe('DashboardView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -87,7 +87,7 @@ describe('DashboardView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -104,7 +104,7 @@ describe('DashboardView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     vi.mocked(getProjects).mockResolvedValue([])
 
@@ -121,7 +121,7 @@ describe('DashboardView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     const mockProjects: Project[] = [
       {
@@ -152,7 +152,7 @@ describe('DashboardView', () => {
       data: mockUser,
       isLoading: false,
       isError: false
-    })
+    } as any)
 
     const mockProjects: Project[] = [
       {

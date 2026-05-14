@@ -34,11 +34,11 @@ describe('TaskList', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useMutation).mockReturnValue({ mutate })
+    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
     vi.mocked(useQueryClient).mockReturnValue({
       setQueryData,
       invalidateQueries
-    })
+    } as any)
   })
 
   const tasks: Task[] = [

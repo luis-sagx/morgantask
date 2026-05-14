@@ -21,8 +21,8 @@ describe('ProjectTeamView', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useMutation).mockReturnValue({ mutate })
-    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries })
+    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries } as any)
   })
 
   const renderView = () =>
@@ -35,13 +35,13 @@ describe('ProjectTeamView', () => {
     )
 
   it('muestra cargando', () => {
-    vi.mocked(useQuery).mockReturnValue({ isLoading: true, isError: false, data: undefined })
+    vi.mocked(useQuery).mockReturnValue({ isLoading: true, isError: false, data: undefined } as any)
     renderView()
     expect(screen.getByText('Cargando...')).toBeInTheDocument()
   })
 
   it('muestra estado vacío', () => {
-    vi.mocked(useQuery).mockReturnValue({ isLoading: false, isError: false, data: [] })
+    vi.mocked(useQuery).mockReturnValue({ isLoading: false, isError: false, data: [] } as any)
     renderView()
     expect(screen.getByText('No hay miembros en este equipo')).toBeInTheDocument()
   })
@@ -52,7 +52,7 @@ describe('ProjectTeamView', () => {
       isLoading: false,
       isError: false,
       data: mockTeam
-    })
+    } as any)
 
     renderView()
     expect(screen.getByText('Administrar Equipo')).toBeInTheDocument()

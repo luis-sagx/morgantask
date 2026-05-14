@@ -34,8 +34,8 @@ describe('NoteDetail', () => {
     _id: 'note123',
     content: 'Test note content',
     createdBy: { _id: 'user123', name: 'John Doe', email: 'john@test.com' },
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
     task: 'task123'
   }
 
@@ -45,7 +45,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    })
+    } as any)
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('Test note content')).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    })
+    } as any)
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('por: John Doe')).toBeInTheDocument()
@@ -69,7 +69,7 @@ describe('NoteDetail', () => {
       isLoading: true,
       isError: false,
       error: null
-    })
+    } as any)
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('Cargando...')).toBeInTheDocument()
@@ -81,7 +81,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    })
+    } as any)
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.getByText('Eliminar')).toBeInTheDocument()
@@ -93,7 +93,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    })
+    } as any)
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     expect(screen.queryByText('Eliminar')).not.toBeInTheDocument()
@@ -105,7 +105,7 @@ describe('NoteDetail', () => {
       isLoading: false,
       isError: false,
       error: null
-    })
+    } as any)
 
     render(<NoteDetail note={mockNote} />, { wrapper: createWrapper() })
     const deleteButton = screen.getByText('Eliminar')
