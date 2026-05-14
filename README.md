@@ -141,6 +141,62 @@ pnpm run test
 
 ---
 
+## GitHub Actions
+
+Se agregaron estos workflows:
+
+- `ci.yml`: install, lint, tests, coverage, audit, sonar-scanner y k6.
+- `security.yml`: scans de Trivy para filesystem y configuración.
+- `deploy.yml`: despliegue automático a VPS por SSH/SCP usando Docker Compose.
+
+### Secrets requeridos
+
+Para `ci.yml`:
+
+- `SONAR_TOKEN`
+- Variable `SONAR_ORGANIZATION`
+- Variable `SONAR_PROJECT_KEY`
+
+Para `deploy.yml`:
+
+- `VPS_HOST`
+- `VPS_PORT`
+- `VPS_USERNAME`
+- `VPS_SSH_KEY`
+- `VPS_APP_PATH`
+- `VPS_ENV_PRODUCTION`
+
+`VPS_ENV_PRODUCTION` debe contener el contenido completo de `.env.production`, por ejemplo:
+
+```env
+DATABASE_URL=mongodb://morgantask:morgantask@mongo:27017/morgantask_mern?authSource=admin
+FRONTEND_URL=http://localhost
+JWT_SECRET=tu_jwt_super_secreto
+PORT=4000
+VITE_API_URL=/api
+```
+
+### Comportamiento de k6
+
+- En `pull_request`: corre `smoke`.
+- En `push`: corre `smoke` y `load`.
+- En `workflow_dispatch`: puede correr también `stress` y `spike` si activás `run_full_k6_suite=true`.
+
+### SonarCloud
+
+Para usar SonarCloud con este pipeline:
+
+1. Crear o importar el proyecto en SonarCloud.
+2. Guardar `SONAR_TOKEN` en `Settings > Secrets and variables > Actions > Secrets`.
+3. Guardar estas variables en `Settings > Secrets and variables > Actions > Variables`:
+
+- `SONAR_ORGANIZATION`
+- `SONAR_PROJECT_KEY`
+
+`SONAR_HOST_URL` ya queda fijo en el workflow como `https://sonarcloud.io`.
+
+---
+
 ## Arquitectura de archivos Docker
 
 ```

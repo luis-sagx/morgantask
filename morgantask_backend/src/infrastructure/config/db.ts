@@ -2,6 +2,7 @@ import { exit } from 'node:process'
 
 import colors from 'colors'
 import mongoose from 'mongoose'
+
 import { getErrorMessage } from '../../interfaces/utils/error'
 
 export const connectDB = async () => {

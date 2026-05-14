@@ -41,6 +41,13 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+RUN chown -R nginx:nginx /usr/share/nginx/html \
+    && chown -R nginx:nginx /var/cache/nginx /etc/nginx/conf.d \
+    && touch /tmp/nginx.pid \
+    && chown nginx:nginx /tmp/nginx.pid
+
+EXPOSE 8080
+
+USER nginx
 
 CMD ["nginx", "-g", "daemon off;"]
