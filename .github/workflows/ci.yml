@@ -295,7 +295,9 @@ jobs:
         uses: grafana/setup-k6-action@v1
 
       - name: Prepare production environment file
-        run: cp .env.production.example .env.production
+        run: |
+          cp .env.production.example .env.production
+          echo "FRONTEND_PORT=80" >> .env.production
 
       - name: Start application stack
         run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
