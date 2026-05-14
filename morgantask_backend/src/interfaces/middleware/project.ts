@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 
 import ProjectModel, { IProjectDoc } from '../../infrastructure/models/ProjectModel'
+import { getErrorMessage } from '../utils/error'
 
 declare global {
     namespace Express {
@@ -20,6 +21,6 @@ export async function projectExists(req: Request, res: Response, next: NextFunct
         req.project = project
         next()
     } catch (error) {
-        res.status(500).json({ error: 'Hubo un error' })
+        res.status(500).json({ error: getErrorMessage(error) })
     }
 }

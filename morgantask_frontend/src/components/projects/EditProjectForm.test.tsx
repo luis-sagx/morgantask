@@ -1,24 +1,42 @@
-import { render, screen } from '@testing-library/react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+import { beforeEach, describe, it, vi } from 'vitest'
 import EditProjectForm from './EditProjectForm'
 import { ProjectFormData } from '@/types'
 
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false }
-    }
-  })
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        {children}
-      </MemoryRouter>
-    </QueryClientProvider>
-  )
-}
+const navigate = vi.fn()
+
+vi.mock('@tanstack/react-query', async () => {
+  const actual = await vi.importActual<typeof import('@tanstack/react-query')>('@tanstack/react-query')
+  return {
+    ...actual,
+    useMutation: vi.fn(),
+    useQueryClient: vi.fn()
+  }
+})
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => navigate
+  }
+})
+
+vi.mock('react-toastify', () => ({
+  toast: {
+    error: vi.fn(),
+    success: vi.fn()
+  }
+}))
+
+const createWrapper = () => ({ children }: { children: React.ReactNode }) => (
+  <MemoryRouter>
+    {children}
+  </MemoryRouter>
+)
 
 const mockProjectData: ProjectFormData = {
   projectName: 'Test Project',
@@ -27,6 +45,20 @@ const mockProjectData: ProjectFormData = {
 }
 
 describe('EditProjectForm', () => {
+  const mutate = vi.fn()
+  const invalidateQueries = vi.fn()
+  let mutationOptions: any[] = []
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mutationOptions = []
+    vi.mocked(useMutation).mockImplementation((options: any) => {
+      mutationOptions.push(options)
+      return { mutate } as any
+    })
+    vi.mocked(useQueryClient).mockReturnValue({ invalidateQueries } as any)
+  })
+
   it('debe renderizar el título del formulario', () => {
     render(<EditProjectForm data={mockProjectData} projectId="123" />, { wrapper: createWrapper() })
     expect(screen.getByText('Editar Proyecto')).toBeInTheDocument()
@@ -51,5 +83,37 @@ describe('EditProjectForm', () => {
     render(<EditProjectForm data={mockProjectData} projectId="123" />, { wrapper: createWrapper() })
     expect(screen.getByDisplayValue('Test Project')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Test Client')).toBeInTheDocument()
+  })
+
+  it('debe enviar el proyecto actualizado', async () => {
+    render(<EditProjectForm data={mockProjectData} projectId="123" />, { wrapper: createWrapper() })
+
+    fireEvent.click(screen.getByDisplayValue('Guardar Cambios'))
+
+    await waitFor(() => {
+      expect(mutate).toHaveBeenCalledWith({
+        formData: mockProjectData,
+        projectId: '123'
+      })
+    })
+  })
+
+  it('debe ejecutar acciones de éxito al guardar', () => {
+    render(<EditProjectForm data={mockProjectData} projectId="123" />, { wrapper: createWrapper() })
+
+    mutationOptions[0].onSuccess('Proyecto actualizado')
+
+    expect(invalidateQueries).toHaveBeenNthCalledWith(1, { queryKey: ['projects'] })
+    expect(invalidateQueries).toHaveBeenNthCalledWith(2, { queryKey: ['editProject', '123'] })
+    expect(toast.success).toHaveBeenCalledWith('Proyecto actualizado')
+    expect(navigate).toHaveBeenCalledWith('/')
+  })
+
+  it('debe mostrar error cuando falla la edición', () => {
+    render(<EditProjectForm data={mockProjectData} projectId="123" />, { wrapper: createWrapper() })
+
+    mutationOptions[0].onError(new Error('Error al editar'))
+
+    expect(toast.error).toHaveBeenCalledWith('Error al editar')
   })
 })

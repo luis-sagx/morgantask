@@ -39,6 +39,7 @@ export default function LoginView() {
         <div className="flex flex-col gap-5">
           <label
             className="text-base font-normal"
+            htmlFor="email"
           >Email</label>
 
           <input
@@ -62,9 +63,11 @@ export default function LoginView() {
         <div className="flex flex-col gap-5">
           <label
             className="text-base font-normal"
+            htmlFor="password"
           >Contraseña</label>
 
           <input
+            id="password"
             type="password"
             placeholder="Contraseña de Registro"
             className="w-full p-3 border border-gray-300 rounded-md"

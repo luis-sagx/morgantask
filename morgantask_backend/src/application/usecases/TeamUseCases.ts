@@ -4,8 +4,8 @@ import { IUserRepository } from '../../domain/ports/IUserRepository'
 
 export class TeamUseCases {
     constructor(
-        private projectRepository: IProjectRepository,
-        private userRepository: IUserRepository
+        private readonly projectRepository: IProjectRepository,
+        private readonly userRepository: IUserRepository
     ) {}
 
     async findMemberByEmail(email: string): Promise<IPublicUser> {

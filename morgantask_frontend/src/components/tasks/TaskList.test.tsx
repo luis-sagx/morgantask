@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { beforeEach, describe, it, vi } from 'vitest'
 import TaskList from './TaskList'
 import type { Task } from '@/types'
@@ -8,6 +9,13 @@ import type { Task } from '@/types'
 vi.mock('@tanstack/react-query', () => ({
   useMutation: vi.fn(),
   useQueryClient: vi.fn()
+}))
+
+vi.mock('react-toastify', () => ({
+  toast: {
+    error: vi.fn(),
+    success: vi.fn()
+  }
 }))
 
 vi.mock('@dnd-kit/core', () => ({
@@ -31,10 +39,15 @@ describe('TaskList', () => {
   const mutate = vi.fn()
   const setQueryData = vi.fn()
   const invalidateQueries = vi.fn()
+  let mutationOptions: any[] = []
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useMutation).mockReturnValue({ mutate } as any)
+    mutationOptions = []
+    vi.mocked(useMutation).mockImplementation((options: any) => {
+      mutationOptions.push(options)
+      return { mutate } as any
+    })
     vi.mocked(useQueryClient).mockReturnValue({
       setQueryData,
       invalidateQueries
@@ -92,5 +105,49 @@ describe('TaskList', () => {
       })
       expect(setQueryData).toHaveBeenCalled()
     })
+
+    const updater = setQueryData.mock.calls[0][1]
+    const prevData = {
+      tasks: [
+        { _id: 'task1', status: 'pending' },
+        { _id: 'task2', status: 'pending' }
+      ]
+    }
+
+    expect(updater(prevData)).toEqual({
+      tasks: [
+        { _id: 'task1', status: 'completed' },
+        { _id: 'task2', status: 'pending' }
+      ]
+    })
+  })
+
+  it('muestra toast e invalida proyecto cuando la mutación termina bien', () => {
+    render(
+      <MemoryRouter initialEntries={['/projects/proj123']}>
+        <Routes>
+          <Route path="/projects/:projectId" element={<TaskList tasks={tasks} canEdit={true} />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    mutationOptions[0].onSuccess('Estado actualizado')
+
+    expect(toast.success).toHaveBeenCalledWith('Estado actualizado')
+    expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['project', 'proj123'] })
+  })
+
+  it('muestra toast de error cuando falla la mutación', () => {
+    render(
+      <MemoryRouter initialEntries={['/projects/proj123']}>
+        <Routes>
+          <Route path="/projects/:projectId" element={<TaskList tasks={tasks} canEdit={true} />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    mutationOptions[0].onError(new Error('No se pudo actualizar'))
+
+    expect(toast.error).toHaveBeenCalledWith('No se pudo actualizar')
   })
 })

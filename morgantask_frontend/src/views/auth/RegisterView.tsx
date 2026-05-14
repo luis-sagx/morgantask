@@ -67,8 +67,10 @@ export default function RegisterView() {
         <div className="flex flex-col gap-5">
           <label
             className="text-base font-normal"
+            htmlFor="name"
           >Nombre</label>
           <input
+            id="name"
             type="name"
             placeholder="Nombre de Registro"
             className="w-full p-3 border border-gray-300 rounded-md"
@@ -84,9 +86,11 @@ export default function RegisterView() {
         <div className="flex flex-col gap-5">
           <label
             className="text-base font-normal"
+            htmlFor="password"
           >Contraseña</label>
 
           <input
+            id="password"
             type="password"
             placeholder="Contraseña de Registro"
             className="w-full p-3 border border-gray-300 rounded-md"
@@ -105,6 +109,7 @@ export default function RegisterView() {
 
         <div className="flex flex-col gap-5">
           <label
+            htmlFor="password_confirmation"
             className="text-base font-normal"
           >Repetir Contraseña</label>
 

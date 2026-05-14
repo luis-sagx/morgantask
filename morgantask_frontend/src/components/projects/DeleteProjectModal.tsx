@@ -18,7 +18,7 @@ export default function DeleteProjectModal() {
 
     const queryParams = new URLSearchParams(location.search);
     const deleteProjectId = queryParams.get('deleteProject')!;
-    const show = deleteProjectId ? true : false
+    const show = Boolean(deleteProjectId)
 
     const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
 

@@ -6,9 +6,9 @@ type NotesPanelProps = {
     notes: Task['notes']
 }
 
-export default function NotesPanel({notes} : NotesPanelProps) {
+export default function NotesPanel({notes} : Readonly<NotesPanelProps>) {
   return (
-    <>
+    <div>
         <AddNoteForm />
 
         <div className="mt-8 divide-y divide-gray-100">
@@ -19,7 +19,6 @@ export default function NotesPanel({notes} : NotesPanelProps) {
                 </>
             ) : <p className="pt-3 text-center text-gray-500">No hay notas</p>}
         </div>
-
-    </>
+    </div>
   )
 }

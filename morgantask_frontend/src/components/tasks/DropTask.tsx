@@ -4,7 +4,7 @@ type DropTaskProps = {
     status: string
 }
 
-export default function DropTask({status} : DropTaskProps) {
+export default function DropTask({status} : Readonly<DropTaskProps>) {
 
     const { isOver, setNodeRef } = useDroppable({
         id: status

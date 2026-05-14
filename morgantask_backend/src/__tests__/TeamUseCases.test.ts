@@ -1,6 +1,6 @@
 import { TeamUseCases } from "../application/usecases/TeamUseCases";
 import { IProject } from "../domain/entities/Project";
-import { IUser } from "../domain/entities/User";
+import { IPublicUser, IUser } from "../domain/entities/User";
 import { IProjectRepository } from "../domain/ports/IProjectRepository";
 import { IUserRepository } from "../domain/ports/IUserRepository";
 
@@ -33,12 +33,10 @@ describe("TeamUseCases", () => {
   });
 
   test("debe buscar un miembro por email", async () => {
-    const mockUser: IUser = {
+    const mockUser: IPublicUser = {
       _id: "user-1",
       email: "miembro@test.com",
-      name: "Miembro",
-      password: "",
-      confirmed: true
+      name: "Miembro"
     };
     userRepositoryMock.findByEmailPublic.mockResolvedValue(mockUser);
 
@@ -61,9 +59,9 @@ describe("TeamUseCases", () => {
   });
 
   test("debe obtener el equipo de un proyecto", async () => {
-    const mockTeam: IUser[] = [
-      { _id: "user-1", name: "Usuario 1", email: "user1@test.com", password: "", confirmed: true },
-      { _id: "user-2", name: "Usuario 2", email: "user2@test.com", password: "", confirmed: true }
+    const mockTeam: IPublicUser[] = [
+      { _id: "user-1", name: "Usuario 1", email: "user1@test.com" },
+      { _id: "user-2", name: "Usuario 2", email: "user2@test.com" }
     ];
     projectRepositoryMock.getTeamPopulated.mockResolvedValue(mockTeam);
 

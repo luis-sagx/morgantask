@@ -1,4 +1,4 @@
-import { IUser, IPublicUser } from '../entities/User'
+import { IPublicUser, IUser } from '../entities/User'
 
 export interface IUserRepository {
     create(data: Omit<IUser, '_id'>): Promise<IUser>

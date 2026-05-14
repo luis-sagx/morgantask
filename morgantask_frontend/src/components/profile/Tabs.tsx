@@ -13,7 +13,7 @@ function classNames(...classes: string[]) {
 export default function Tabs() {
     const navigate = useNavigate()
     const location = useLocation()
-    const currentTab = tabs.filter(tab => tab.href === location.pathname)[0].href
+    const currentTab = tabs.find((tab) => tab.href === location.pathname)?.href ?? tabs[0].href
     
     return (
         <div className='mb-10'>

@@ -16,7 +16,7 @@ export default function TaskModalDetails() {
     const queryParams = new URLSearchParams(location.search)
     const taskId = queryParams.get('viewTask')!
 
-    const show = taskId ? true : false
+    const show = Boolean(taskId)
 
     const { data, isError, error } = useQuery({
         queryKey: ['task', taskId],
@@ -31,20 +31,19 @@ export default function TaskModalDetails() {
     }
 
     if (data) return (
-        <>
-            <Transition appear show={show} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={() => navigate(location.pathname, { replace: true })}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-black/60" />
-                    </Transition.Child>
+        <Transition appear show={show} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={() => navigate(location.pathname, { replace: true })}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/60" />
+                </Transition.Child>
 
                     <div className="fixed inset-0 overflow-y-auto">
                         <div className="flex items-center justify-center min-h-full p-4 text-center">
@@ -70,9 +69,9 @@ export default function TaskModalDetails() {
 
                                     {data.completedBy.length ? (
                                         <>
-                                            <p className='my-4 text-lg font-bold text-indigo-600'>Historial de Cambios</p>
+                                            <p className='my-4 text-lg font-bold text-slate-600'>Historial de Cambios</p>
 
-                                            <ul className='ml-6 list-decimal'>
+                                            <ul className='list-decimal '>
                                                 {data.completedBy.map((activityLog) => (
                                                     <li key={activityLog._id}>
                                                         <span className='font-bold text-slate-600'>
@@ -84,15 +83,14 @@ export default function TaskModalDetails() {
                                         </>
                                     ) : null}
 
-                                    <NotesPanel
-                                        notes={data.notes}
-                                    />
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+                                <NotesPanel
+                                    notes={data.notes}
+                                />
+                            </Dialog.Panel>
+                        </Transition.Child>
                     </div>
-                </Dialog>
-            </Transition>
-        </>
+                </div>
+            </Dialog>
+        </Transition>
     )
 }
