@@ -147,7 +147,7 @@ Se agregaron estos workflows:
 
 - `ci.yml`: install, lint, tests, coverage, audit, sonar-scanner y k6.
 - `security.yml`: scans de Trivy para filesystem y configuración.
-- `deploy.yml`: despliegue automático a VPS por SSH/SCP usando Docker Compose.
+- `deploy.yml`: despliegue automático a VPS por SSH usando `git pull` y Docker Compose.
 
 ### Secrets requeridos
 
@@ -161,7 +161,7 @@ Para `deploy.yml`:
 
 - `VPS_HOST`
 - `VPS_PORT`
-- `VPS_USERNAME`
+- `VPS_USER` (o `VPS_USERNAME` como fallback)
 - `VPS_SSH_KEY`
 - `VPS_APP_PATH`
 - `VPS_ENV_PRODUCTION`
@@ -175,6 +175,8 @@ JWT_SECRET=tu_jwt_super_secreto
 PORT=4000
 VITE_API_URL=/api
 ```
+
+Antes del primer deploy automático, el repo debe existir en la VPS en la ruta configurada en `VPS_APP_PATH` y ese servidor debe poder ejecutar `git fetch/pull origin main`. Si el repositorio es privado, configurá previamente acceso SSH o credenciales de lectura en la VPS.
 
 ### Comportamiento de k6
 
