@@ -141,6 +141,48 @@ pnpm run test
 
 ---
 
+## GitHub Actions
+
+Se agregaron estos workflows:
+
+- `ci.yml`: install, lint, tests, coverage, audit, sonar-scanner y k6.
+- `security.yml`: scans de Trivy para filesystem y configuración.
+- `deploy.yml`: despliegue automático a VPS por SSH/SCP usando Docker Compose.
+
+### Secrets requeridos
+
+Para `ci.yml`:
+
+- `SONAR_TOKEN`
+- `SONAR_HOST_URL`
+
+Para `deploy.yml`:
+
+- `VPS_HOST`
+- `VPS_PORT`
+- `VPS_USERNAME`
+- `VPS_SSH_KEY`
+- `VPS_APP_PATH`
+- `VPS_ENV_PRODUCTION`
+
+`VPS_ENV_PRODUCTION` debe contener el contenido completo de `.env.production`, por ejemplo:
+
+```env
+DATABASE_URL=mongodb://morgantask:morgantask@mongo:27017/morgantask_mern?authSource=admin
+FRONTEND_URL=http://localhost
+JWT_SECRET=tu_jwt_super_secreto
+PORT=4000
+VITE_API_URL=/api
+```
+
+### Comportamiento de k6
+
+- En `pull_request`: corre `smoke`.
+- En `push`: corre `smoke` y `load`.
+- En `workflow_dispatch`: puede correr también `stress` y `spike` si activás `run_full_k6_suite=true`.
+
+---
+
 ## Arquitectura de archivos Docker
 
 ```
