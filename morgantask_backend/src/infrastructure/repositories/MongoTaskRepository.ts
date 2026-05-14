@@ -1,4 +1,4 @@
-import { ITask, ICompletedByUser, INoteProjection, TaskStatus } from '../../domain/entities/Task'
+import { ITask, INoteProjection, TaskStatus } from '../../domain/entities/Task'
 import { ITaskRepository } from '../../domain/ports/ITaskRepository'
 import TaskModel, { ITaskDoc } from '../models/TaskModel'
 
