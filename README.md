@@ -154,7 +154,8 @@ Se agregaron estos workflows:
 Para `ci.yml`:
 
 - `SONAR_TOKEN`
-- `SONAR_HOST_URL`
+- Variable `SONAR_ORGANIZATION`
+- Variable `SONAR_PROJECT_KEY`
 
 Para `deploy.yml`:
 
@@ -180,6 +181,19 @@ VITE_API_URL=/api
 - En `pull_request`: corre `smoke`.
 - En `push`: corre `smoke` y `load`.
 - En `workflow_dispatch`: puede correr también `stress` y `spike` si activás `run_full_k6_suite=true`.
+
+### SonarCloud
+
+Para usar SonarCloud con este pipeline:
+
+1. Crear o importar el proyecto en SonarCloud.
+2. Guardar `SONAR_TOKEN` en `Settings > Secrets and variables > Actions > Secrets`.
+3. Guardar estas variables en `Settings > Secrets and variables > Actions > Variables`:
+
+- `SONAR_ORGANIZATION`
+- `SONAR_PROJECT_KEY`
+
+`SONAR_HOST_URL` ya queda fijo en el workflow como `https://sonarcloud.io`.
 
 ---
 

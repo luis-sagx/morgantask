@@ -240,31 +240,44 @@ jobs:
     name: sonar-scanner
     runs-on: ubuntu-latest
     needs: coverage
-    if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: https://sonarcloud.io
+      SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
 
     steps:
+      - name: Skip SonarQube scan when secrets are missing
+        if: ${{ env.SONAR_TOKEN == '' || env.SONAR_ORGANIZATION == '' || env.SONAR_PROJECT_KEY == '' }}
+        run: echo "Skipping SonarCloud scan because SONAR_TOKEN, SONAR_ORGANIZATION, or SONAR_PROJECT_KEY is not configured."
+
       - name: Checkout repository
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' && env.SONAR_PROJECT_KEY != '' }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Download backend coverage
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' && env.SONAR_PROJECT_KEY != '' }}
         uses: actions/download-artifact@v4
         with:
           name: backend-coverage
           path: morgantask_backend/coverage
 
       - name: Download frontend coverage
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' && env.SONAR_PROJECT_KEY != '' }}
         uses: actions/download-artifact@v4
         with:
           name: frontend-coverage
           path: morgantask_frontend/coverage
 
       - name: Run SonarQube scan
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' && env.SONAR_PROJECT_KEY != '' }}
         uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
 
   k6-performance-tests:
     name: k6 performance tests
