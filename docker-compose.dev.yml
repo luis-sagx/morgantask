@@ -1,0 +1,50 @@
+# =============================================================
+# docker-compose.dev.yml — Development overrides
+# Hot reload, bind volumes, visible logs, MongoDB accessible from host
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# =============================================================
+
+services:
+  mongo:
+    ports:
+      - "27019:27017"
+
+  backend:
+    build:
+      context: ./morgantask_backend
+      dockerfile: ../docker/backend/Dockerfile
+      target: development
+    container_name: morgantask_backend_dev
+    volumes:
+      - ./morgantask_backend:/app
+      - /app/node_modules
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.development
+    environment:
+      - DATABASE_URL=mongodb://${MONGO_USER:-morgantask}:${MONGO_PASSWORD:-morgantask}@mongo:27017/${MONGO_DB:-morgantask_mern}?authSource=admin
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./morgantask_frontend
+      dockerfile: ../docker/frontend/Dockerfile
+      target: development
+    container_name: morgantask_frontend_dev
+    volumes:
+      - ./morgantask_frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:4000/api
+    depends_on:
+      - backend
+    networks:
+      - app-network

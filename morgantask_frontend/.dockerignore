@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+
+# Tests
+coverage/
+src/test/
+
+# Environment
+.env
+.env.*
+!.env.local
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.sw?
+
+# Logs
+*.log
+
+# Misc
+vercel.json
