@@ -1,0 +1,71 @@
+services:
+  sonarqube_db:
+    image: postgres:15-alpine
+    container_name: morgantask_sonarqube_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${SONAR_DB_USER:-sonar}
+      POSTGRES_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
+      POSTGRES_DB: ${SONAR_DB_NAME:-sonarqube}
+    volumes:
+      - sonarqube_db_data:/var/lib/postgresql/data
+    networks:
+      - sonar-network
+
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: morgantask_sonarqube
+    restart: unless-stopped
+    depends_on:
+      - sonarqube_db
+    ports:
+      - "${SONARQUBE_PORT:-9000}:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube_db:5432/${SONAR_DB_NAME:-sonarqube}
+      SONAR_JDBC_USERNAME: ${SONAR_DB_USER:-sonar}
+      SONAR_JDBC_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    networks:
+      - sonar-network
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    container_name: morgantask_sonar_scanner
+    depends_on:
+      - sonarqube
+    working_dir: /usr/src
+    environment:
+      SONAR_HOST_URL: http://sonarqube:9000
+      SONAR_TOKEN: ${SONAR_TOKEN:-}
+    volumes:
+      - ./:/usr/src
+      - sonarscanner_cache:/opt/sonar-scanner/.sonar/cache
+    networks:
+      - sonar-network
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        until wget -q -O - http://sonarqube:9000/api/system/status | grep -q "\"status\":\"UP\""; do
+          echo "Esperando a que SonarQube este listo...";
+          sleep 10;
+        done;
+        sonar-scanner \
+          -Dsonar.host.url=$$SONAR_HOST_URL \
+          $${SONAR_TOKEN:+-Dsonar.token=$$SONAR_TOKEN}
+    profiles:
+      - scan
+
+networks:
+  sonar-network:
+    driver: bridge
+
+volumes:
+  sonarqube_db_data:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+  sonarscanner_cache:

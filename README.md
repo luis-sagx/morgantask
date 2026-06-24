@@ -130,6 +130,49 @@ Los archivos `.env` dentro de `morgantask_backend/` y `morgantask_frontend/` ya 
 
 ---
 
+## SonarQube local con Docker
+
+Se agregó [`docker-compose.sonar.yml`](/Users/jeffersonyepez/morgantask/docker-compose.sonar.yml) para levantar un SonarQube local con PostgreSQL y ejecutar `sonar-scanner` contra este mismo monorepo.
+
+### Levantar SonarQube
+
+```bash
+docker compose -f docker-compose.sonar.yml up -d sonarqube_db sonarqube
+```
+
+Queda disponible en:
+
+- SonarQube: `http://localhost:9000`
+
+Usuario inicial por defecto:
+
+- usuario: `admin`
+- clave: `admin`
+
+### Lanzar el análisis del proyecto
+
+Si ya generaste un token dentro de SonarQube:
+
+```bash
+SONAR_TOKEN=tu_token docker compose -f docker-compose.sonar.yml --profile scan up sonar-scanner
+```
+
+Si no quieres usar token todavía, puedes ejecutar el scanner sin `SONAR_TOKEN`, aunque lo normal es configurarlo desde la UI después del primer login.
+
+### Bajar SonarQube
+
+```bash
+docker compose -f docker-compose.sonar.yml down
+```
+
+Para borrar también la base y el caché de análisis:
+
+```bash
+docker compose -f docker-compose.sonar.yml down -v
+```
+
+---
+
 ## Testing
 
 ### Backend (Jest)
