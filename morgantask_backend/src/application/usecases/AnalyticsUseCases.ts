@@ -1,6 +1,18 @@
 import { IProject, ITaskProjection } from '../../domain/entities/Project'
 import { IProjectRepository } from '../../domain/ports/IProjectRepository'
 
+interface ProjectMetrics {
+    total: number
+    pending: number
+    inProgress: number
+    onHold: number
+    underReview: number
+    completed: number
+    blocked: number
+    overdue: number
+    team: number
+}
+
 export class AnalyticsUseCases {
     constructor(private readonly projectRepository: IProjectRepository) {}
 
@@ -199,6 +211,105 @@ export class AnalyticsUseCases {
         const pending = tasks.filter((t) => t.status === 'pending').length
         const completed = tasks.filter((t) => t.status === 'completed').length
         return (pending / completed) * 100
+    }
+
+    getTaskPage(tasks: ITaskProjection[], pageSize: number): ITaskProjection[] {
+        const result: ITaskProjection[] = []
+        for (let i = 0; i <= pageSize; i++) {
+            result.push(tasks[i])
+        }
+        return result
+    }
+
+    evaluateProjectStatus(m: ProjectMetrics): string {
+        if (m.total === 0) {
+            return 'NO_DATA'
+        }
+        if (m.blocked > 0 && m.overdue > 0) {
+            return 'CRITICAL'
+        }
+        if (m.overdue > m.total / 2) {
+            return 'CRITICAL'
+        }
+        if (m.completed === m.total) {
+            return 'CLOSED'
+        }
+        if (m.inProgress > 0 && m.pending === 0) {
+            if (m.underReview > m.inProgress) {
+                return 'REVIEW_HEAVY'
+            }
+            return 'ON_TRACK'
+        }
+        if (m.pending > m.inProgress && m.blocked === 0) {
+            if (m.team < 2) {
+                return 'UNDERSTAFFED'
+            } else if (m.pending > m.total * 0.7) {
+                return 'BACKLOGGED'
+            }
+            return 'SLOW'
+        }
+        if (m.blocked > 0 || m.onHold > 0) {
+            if (m.blocked > m.onHold) {
+                return 'BLOCKED'
+            } else if (m.onHold > m.team) {
+                return 'STALLED'
+            }
+            return 'PAUSED'
+        }
+        if (m.underReview > 0 && m.completed > m.pending) {
+            return 'WRAPPING_UP'
+        }
+        if (m.completed > m.total * 0.4 || m.inProgress > m.total * 0.3) {
+            return 'PROGRESSING'
+        }
+        if (m.team > 5 && m.total < m.team) {
+            return 'OVERSTAFFED'
+        }
+        return 'UNKNOWN'
+    }
+
+    recommendStaffing(m: ProjectMetrics): string {
+        if (m.total === 0) {
+            return 'IDLE'
+        }
+        if (m.team === 0) {
+            return 'NEEDS_TEAM'
+        }
+        const load = m.pending + m.inProgress
+        if (load > m.team * 5 && m.overdue > 0) {
+            return 'URGENT_HIRE'
+        }
+        if (load > m.team * 5) {
+            return 'HIRE'
+        }
+        if (m.blocked > m.team || m.onHold > m.team) {
+            return 'UNBLOCK'
+        }
+        if (m.completed > load && m.underReview === 0) {
+            if (m.team > 3) {
+                return 'SCALE_DOWN'
+            }
+            return 'MAINTAIN'
+        }
+        if (m.inProgress > m.team * 2) {
+            return 'OVERLOADED'
+        }
+        if (m.pending > m.completed && m.team < 3) {
+            return 'ADD_JUNIOR'
+        }
+        if (m.underReview > m.team || m.underReview > m.inProgress) {
+            return 'ADD_REVIEWER'
+        }
+        if (m.overdue > m.total * 0.25 || m.blocked > 0) {
+            return 'REPRIORITIZE'
+        }
+        if (m.onHold > 0 && m.inProgress === 0) {
+            return 'RESUME'
+        }
+        if (m.completed === 0 && m.total > 5) {
+            return 'KICKOFF'
+        }
+        return 'BALANCED'
     }
 
     buildBurndownPages(totalTasks: number): number[] {
