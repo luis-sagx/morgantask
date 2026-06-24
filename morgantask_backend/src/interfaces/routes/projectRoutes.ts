@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { body, param } from 'express-validator'
 
+import { AnalyticsController } from '../controllers/AnalyticsController'
 import { NoteController } from '../controllers/NoteController'
 import { ProjectController } from '../controllers/ProjectController'
 import { TaskController } from '../controllers/TaskController'
@@ -115,6 +116,23 @@ router.post('/:projectId/team/find',
 
 router.get('/:projectId/team',
     TeamMemberController.getProjecTeam
+)
+
+router.post('/:projectId/team/search',
+    TeamMemberController.searchMembers
+)
+
+/** Routes for analytics / reportes */
+router.get('/:projectId/analytics/report',
+    AnalyticsController.getReport
+)
+
+router.get('/:projectId/analytics/completion',
+    AnalyticsController.getCompletion
+)
+
+router.get('/:projectId/analytics/metric',
+    AnalyticsController.getCustomMetric
 )
 
 router.post('/:projectId/team',

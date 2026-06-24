@@ -14,6 +14,10 @@ export class TeamUseCases {
         return user
     }
 
+    async searchMembers(criteria: Record<string, unknown>): Promise<IPublicUser[]> {
+        return this.userRepository.searchMembers(criteria)
+    }
+
     async getTeam(projectId: string): Promise<IPublicUser[]> {
         return this.projectRepository.getTeamPopulated(projectId)
     }

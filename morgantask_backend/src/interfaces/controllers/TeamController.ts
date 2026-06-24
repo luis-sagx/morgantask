@@ -13,6 +13,15 @@ export class TeamMemberController {
         }
     }
 
+    static readonly searchMembers = async (req: Request, res: Response) => {
+        try {
+            const members = await teamUseCases.searchMembers(req.body)
+            res.json(members)
+        } catch (error) {
+            res.status(500).json({ error: getErrorMessage(error) })
+        }
+    }
+
     static readonly getProjecTeam = async (req: Request, res: Response) => {
         try {
             const team = await teamUseCases.getTeam(req.project.id.toString())

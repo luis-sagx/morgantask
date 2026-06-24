@@ -1,3 +1,4 @@
+import { AnalyticsUseCases } from '../application/usecases/AnalyticsUseCases'
 import { AuthUseCases } from '../application/usecases/AuthUseCases'
 import { NoteUseCases } from '../application/usecases/NoteUseCases'
 import { ProjectUseCases } from '../application/usecases/ProjectUseCases'
@@ -19,3 +20,4 @@ export const projectUseCases = new ProjectUseCases(projectRepository)
 export const taskUseCases = new TaskUseCases(taskRepository, projectRepository)
 export const noteUseCases = new NoteUseCases(noteRepository, taskRepository)
 export const teamUseCases = new TeamUseCases(projectRepository, userRepository)
+export const analyticsUseCases = new AnalyticsUseCases(projectRepository)
