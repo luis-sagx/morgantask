@@ -1,12 +1,25 @@
 # =============================================================
-# docker-compose.prod.yml — Production overrides
+# docker-compose.prod.yml — Production
 # Compiled frontend (nginx), optimized backend, restart policies
 #
 # Usage:
-#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#   docker compose -f docker-compose.prod.yml up -d --build
 # =============================================================
 
 services:
+  mongo:
+    image: mongo:7
+    container_name: morgantask_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-morgantask}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-morgantask}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-morgantask_mern}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./morgantask_backend
@@ -39,3 +52,10 @@ services:
       - backend
     networks:
       - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:

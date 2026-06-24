@@ -2,6 +2,13 @@
 
 App full-stack para gestión de proyectos, tareas, notas y equipos.
 
+> ## Contexto del proyecto
+>
+> Morgan Task nació como MVP heredado de un equipo anterior y creció bajo plazos de entrega
+> ajustados (demos al cliente, cierres de trimestre). Como en cualquier producto en evolución,
+> conviven módulos maduros con otros que todavía están en proceso de estabilización. El roadmap
+> contempla un trabajo de saneamiento técnico una vez liberadas las funcionalidades comprometidas.
+
 ## Stack
 
 - **Backend**: Node.js, Express, TypeScript, MongoDB, Mongoose, JWT, bcrypt, Morgan
@@ -19,7 +26,7 @@ App full-stack para gestión de proyectos, tareas, notas y equipos.
 ### Levantar
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+docker compose up
 ```
 
 Servicios accesibles:
@@ -30,7 +37,7 @@ Servicios accesibles:
 ### Bajar
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+docker compose down
 ```
 
 - Mantiene datos de MongoDB: `down`
@@ -61,7 +68,7 @@ pnpm run dev
 ### Levantar
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 App queda disponible en: `http://IP_DEL_VPS:80`
@@ -69,7 +76,7 @@ App queda disponible en: `http://IP_DEL_VPS:80`
 ### Bajar
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml down
 ```
 
 - Mantiene datos: `down`
@@ -104,7 +111,7 @@ Los archivos `.env` dentro de `morgantask_backend/` y `morgantask_frontend/` ya 
 
 3. **Ejecutar en la VPS**:
    ```bash
-   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+   docker compose -f docker-compose.prod.yml up -d --build
    ```
 
 4. **Acceder**: `http://IP_DE_TU_VPS:80`

@@ -1,8 +1,9 @@
 # =============================================================
-# docker-compose.yml — Base configuration (shared services)
+# docker-compose.yml — Local development
+# Hot reload, bind volumes, visible logs, MongoDB accessible from host
+#
 # Usage:
-#   Dev:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up
-#   Prod: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#   docker compose up
 # =============================================================
 
 services:
@@ -14,8 +15,48 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-morgantask}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-morgantask}
       MONGO_INITDB_DATABASE: ${MONGO_DB:-morgantask_mern}
+    ports:
+      - "27019:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./morgantask_backend
+      dockerfile: ../docker/backend/Dockerfile
+      target: development
+    container_name: morgantask_backend_dev
+    volumes:
+      - ./morgantask_backend:/app
+      - /app/node_modules
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.development
+    environment:
+      - DATABASE_URL=mongodb://${MONGO_USER:-morgantask}:${MONGO_PASSWORD:-morgantask}@mongo:27017/${MONGO_DB:-morgantask_mern}?authSource=admin
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./morgantask_frontend
+      dockerfile: ../docker/frontend/Dockerfile
+      target: development
+    container_name: morgantask_frontend_dev
+    volumes:
+      - ./morgantask_frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:4000/api
+    depends_on:
+      - backend
     networks:
       - app-network
 
