@@ -33,6 +33,7 @@ services:
 
   sonar-scanner:
     image: sonarsource/sonar-scanner-cli:latest
+    platform: linux/amd64
     container_name: morgantask_sonar_scanner
     depends_on:
       - sonarqube
@@ -49,7 +50,7 @@ services:
       - /bin/sh
       - -ec
       - |
-        until wget -q -O - http://sonarqube:9000/api/system/status | grep -q "\"status\":\"UP\""; do
+        until curl -fsS http://sonarqube:9000/api/system/status | grep -q "\"status\":\"UP\""; do
           echo "Esperando a que SonarQube este listo...";
           sleep 10;
         done;
