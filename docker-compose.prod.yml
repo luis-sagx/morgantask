@@ -1,6 +1,6 @@
 # =============================================================
 # docker-compose.prod.yml — Production (standalone)
-# Usage: docker compose -f docker-compose.prod.yml up -d --build
+# Usage: docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
 # =============================================================
 
 services:
@@ -26,8 +26,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env.production
-    environment:
-      - DATABASE_URL=mongodb://${MONGO_USER:-morgantask}:${MONGO_PASSWORD:-morgantask}@mongo:27017/${MONGO_DB:-morgantask_mern}?authSource=admin
     depends_on:
       - mongo
     networks:

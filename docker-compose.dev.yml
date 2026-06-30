@@ -1,6 +1,6 @@
 # =============================================================
 # docker-compose.dev.yml — Development (standalone)
-# Usage: docker compose -f docker-compose.dev.yml up
+# Usage: docker compose --env-file .env.development -f docker-compose.dev.yml up
 # =============================================================
 
 services:
@@ -32,8 +32,6 @@ services:
       - "4000:4000"
     env_file:
       - .env.development
-    environment:
-      - DATABASE_URL=mongodb://${MONGO_USER:-morgantask}:${MONGO_PASSWORD:-morgantask}@mongo:27017/${MONGO_DB:-morgantask_mern}?authSource=admin
     depends_on:
       - mongo
     networks:
