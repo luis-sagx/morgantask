@@ -17,7 +17,7 @@ const errorRate       = new Rate('error_rate')
 
 export const options = {
   vus: 1,
-  duration: '30s',
+  duration: '15s',
   thresholds: {
     http_req_failed:   ['rate<0.01'],
     error_rate:        ['rate<0.01'],

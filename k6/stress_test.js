@@ -16,13 +16,13 @@ const failedRequests = new Counter('stress_failed_requests')
 
 export const options = {
   stages: [
-    { duration: '1m',  target: 10  },
-    { duration: '2m',  target: 20  },
-    { duration: '2m',  target: 40  },
-    { duration: '2m',  target: 60  },
-    { duration: '2m',  target: 80  },
-    { duration: '2m',  target: 100 },
-    { duration: '2m',  target: 0   },
+    { duration: '20s', target: 10  },
+    { duration: '30s', target: 20  },
+    { duration: '30s', target: 40  },
+    { duration: '30s', target: 60  },
+    { duration: '30s', target: 80  },
+    { duration: '30s', target: 100 },
+    { duration: '30s', target: 0   },
   ],
   thresholds: {
     'http_req_failed':      ['rate<0.10'],

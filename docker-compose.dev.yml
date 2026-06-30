@@ -1,15 +1,23 @@
 # =============================================================
-# docker-compose.dev.yml — Development overrides
-# Hot reload, bind volumes, visible logs, MongoDB accessible from host
-#
-# Usage:
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# docker-compose.dev.yml — Development (standalone)
+# Usage: docker compose -f docker-compose.dev.yml up
 # =============================================================
 
 services:
   mongo:
+    image: mongo:7
+    container_name: morgantask_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-morgantask}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-morgantask}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-morgantask_mern}
     ports:
       - "27019:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
 
   backend:
     build:
@@ -48,3 +56,10 @@ services:
       - backend
     networks:
       - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:

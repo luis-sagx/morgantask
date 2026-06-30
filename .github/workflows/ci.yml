@@ -300,7 +300,7 @@ jobs:
           echo "FRONTEND_PORT=80" >> .env.production
 
       - name: Start application stack
-        run: docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+        run: docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
 
       - name: Wait for nginx and API
         run: |
@@ -314,7 +314,7 @@ jobs:
             sleep 5
           done
           echo "Application stack did not become ready in time."
-          docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml logs
+          docker compose --env-file .env.production -f docker-compose.prod.yml logs
           exit 1
 
       - name: Run smoke performance test
@@ -350,8 +350,8 @@ jobs:
 
       - name: Show compose logs on failure
         if: failure()
-        run: docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml logs --no-color
+        run: docker compose --env-file .env.production -f docker-compose.prod.yml logs --no-color
 
       - name: Stop application stack
         if: always()
-        run: docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.prod.yml down -v
+        run: docker compose --env-file .env.production -f docker-compose.prod.yml down -v
