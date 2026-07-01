@@ -14,7 +14,7 @@ declare global {
 export async function projectExists(req: Request, res: Response, next: NextFunction) {
     try {
         const { projectId } = req.params
-        const project = await ProjectModel.findById(projectId)
+        const project = await ProjectModel.findById(projectId).exec()
         if (!project) {
             return res.status(404).json({ error: 'Proyecto no encontrado' })
         }

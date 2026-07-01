@@ -19,16 +19,16 @@ export class MongoNoteRepository implements INoteRepository {
     }
 
     async findByTask(taskId: string): Promise<INote[]> {
-        const notes = await NoteModel.find({ task: taskId })
+        const notes = await NoteModel.find({ task: taskId }).exec()
         return notes.map(n => this.toEntity(n))
     }
 
     async findById(id: string): Promise<INote | null> {
-        const note = await NoteModel.findById(id)
+        const note = await NoteModel.findById(id).exec()
         return note ? this.toEntity(note) : null
     }
 
     async delete(id: string): Promise<void> {
-        await NoteModel.findByIdAndDelete(id)
+        await NoteModel.findByIdAndDelete(id).exec()
     }
 }

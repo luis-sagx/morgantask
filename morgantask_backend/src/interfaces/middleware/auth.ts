@@ -23,7 +23,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     try {
         const decoded = verify(token, process.env.JWT_SECRET)
         if (typeof decoded === 'object' && decoded.id) {
-            const user = await UserModel.findById(decoded.id).select('_id name email')
+            const user = await UserModel.findById(decoded.id).select('_id name email').exec()
             if (user) {
                 req.user = user
                 next()

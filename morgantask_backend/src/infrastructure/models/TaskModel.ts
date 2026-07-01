@@ -63,10 +63,10 @@ const TaskSchema: Schema = new Schema({
     ]
 }, { timestamps: true })
 
-TaskSchema.pre('deleteOne', { document: true }, async function () {
-    const taskId = this._id
-    if (!taskId) return
-    await NoteModel.deleteMany({ task: taskId })
+TaskSchema.pre('findOneAndDelete', async function () {
+    const doc = await this.model.findOne(this.getFilter()).exec()
+    if (!doc) return
+    await NoteModel.deleteMany({ task: doc._id }).exec()
 })
 
 const TaskModel = mongoose.model<ITaskDoc>('Task', TaskSchema)

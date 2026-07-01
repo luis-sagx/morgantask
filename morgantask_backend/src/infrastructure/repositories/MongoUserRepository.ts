@@ -20,17 +20,17 @@ export class MongoUserRepository implements IUserRepository {
     }
 
     async findByEmail(email: string): Promise<IUser | null> {
-        const user = await UserModel.findOne({ email })
+        const user = await UserModel.findOne({ email }).exec()
         return user ? this.toEntity(user) : null
     }
 
     async findById(id: string): Promise<IUser | null> {
-        const user = await UserModel.findById(id)
+        const user = await UserModel.findById(id).exec()
         return user ? this.toEntity(user) : null
     }
 
     async findByIdPublic(id: string): Promise<Omit<IUser, 'password'> | null> {
-        const user = await UserModel.findById(id).select('_id name email confirmed')
+        const user = await UserModel.findById(id).select('_id name email confirmed').exec()
         if (!user) return null
         return {
             _id: user.id.toString(),
@@ -41,17 +41,17 @@ export class MongoUserRepository implements IUserRepository {
     }
 
     async findByEmailPublic(email: string): Promise<IPublicUser | null> {
-        const user = await UserModel.findOne({ email }).select('_id email name')
+        const user = await UserModel.findOne({ email }).select('_id email name').exec()
         if (!user) return null
         return { _id: user.id.toString(), email: user.email, name: user.name }
     }
 
     async update(id: string, data: Partial<Omit<IUser, '_id'>>): Promise<void> {
-        await UserModel.findByIdAndUpdate(id, data)
+        await UserModel.findByIdAndUpdate(id, data).exec()
     }
 
     async searchMembers(filter: Record<string, unknown>): Promise<IPublicUser[]> {
-        const users = await UserModel.find(filter).select('_id email name')
+        const users = await UserModel.find(filter).select('_id email name').exec()
         return users.map((u) => ({ _id: u.id.toString(), email: u.email, name: u.name }))
     }
 }

@@ -46,15 +46,14 @@ const ProjectSchema: Schema = new Schema({
     ]
 }, { timestamps: true })
 
-ProjectSchema.pre('deleteOne', { document: true }, async function () {
-    const projectId = this._id
-    if (!projectId) return
-
-    const tasks = await TaskModel.find({ project: projectId })
+ProjectSchema.pre('findOneAndDelete', async function () {
+    const doc = await this.model.findOne(this.getFilter()).exec()
+    if (!doc) return
+    const tasks = await TaskModel.find({ project: doc._id }).exec()
     for (const task of tasks) {
-        await NoteModel.deleteMany({ task: task.id })
+        await NoteModel.deleteMany({ task: task.id }).exec()
     }
-    await TaskModel.deleteMany({ project: projectId })
+    await TaskModel.deleteMany({ project: doc._id }).exec()
 })
 
 const ProjectModel = mongoose.model<IProjectDoc>('Project', ProjectSchema)

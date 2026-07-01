@@ -57,12 +57,12 @@ export class MongoTaskRepository implements ITaskRepository {
     }
 
     async findByProject(projectId: string): Promise<ITask[]> {
-        const tasks = await TaskModel.find({ project: projectId }).populate('project')
+        const tasks = await TaskModel.find({ project: projectId }).populate('project').exec()
         return tasks.map(t => this.toEntity(t))
     }
 
     async findById(id: string): Promise<ITask | null> {
-        const task = await TaskModel.findById(id)
+        const task = await TaskModel.findById(id).exec()
         return task ? this.toEntity(task) : null
     }
 
@@ -70,30 +70,30 @@ export class MongoTaskRepository implements ITaskRepository {
         const task = await TaskModel.findById(id)
             .populate({ path: 'completedBy.user', select: 'id name email' })
             .populate({ path: 'notes', populate: { path: 'createdBy', select: 'id name email' } })
+            .exec()
         return task ? this.toEntity(task, true) : null
     }
 
     async update(id: string, data: Pick<ITask, 'name' | 'description'>): Promise<void> {
-        await TaskModel.findByIdAndUpdate(id, data)
+        await TaskModel.findByIdAndUpdate(id, data).exec()
     }
 
     async updateStatus(id: string, userId: string, status: TaskStatus): Promise<void> {
         await TaskModel.findByIdAndUpdate(id, {
             status,
             $push: { completedBy: { user: userId, status } }
-        })
+        }).exec()
     }
 
     async delete(id: string): Promise<void> {
-        const task = await TaskModel.findById(id)
-        if (task) await task.deleteOne()
+        await TaskModel.findByIdAndDelete(id).exec()
     }
 
     async addNote(taskId: string, noteId: string): Promise<void> {
-        await TaskModel.findByIdAndUpdate(taskId, { $push: { notes: noteId } })
+        await TaskModel.findByIdAndUpdate(taskId, { $push: { notes: noteId } }).exec()
     }
 
     async removeNote(taskId: string, noteId: string): Promise<void> {
-        await TaskModel.findByIdAndUpdate(taskId, { $pull: { notes: noteId } })
+        await TaskModel.findByIdAndUpdate(taskId, { $pull: { notes: noteId } }).exec()
     }
 }
